@@ -1,19 +1,24 @@
 <template>
   <div class="home">
-    <HomeComponent msg="Bienvenue chez Groupomania"/>
-    <FeedComponent/>
+    <LoginComponent/>  
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HomeComponent from '@/components/HomeComponent.vue'
-import FeedComponent from '@/components/FeedComponent.vue'
+import LoginComponent from '@/components/LoginComponent.vue'
 
 export default {
   name: 'Home',
   components: {
-    HomeComponent, FeedComponent
+    LoginComponent
   }
 }
+
+
 </script>
+
+<style lang="scss">
+
+
+</style>

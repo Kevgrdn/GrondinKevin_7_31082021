@@ -1,11 +1,36 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/HomeView.vue'
+import Feed from '../views/FeedView.vue'
+import Login from '../views/HomeView.vue'
+import Subscribe from '../views/SubscribeView.vue'
+import Chat from '../views/ChatView.vue'
+import Post from '../views/PostView.vue'
+
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'login',
+    component: Login
+  },
+  {
+    path:'/subscribe',
+    name:'subscribe',
+    component: Subscribe
+  },
+  {
+    path:'/post',
+    name:'post',
+    component: Post
+  },
+  {
+    path:'/chat',
+    name:'chat',
+    component: Chat 
+  },
+  {
+    path: '/feed',
+    name: 'home',
+    component: Feed
   },
   {
     path: '/about',

@@ -1,8 +1,4 @@
 <template>
-  <div id="nav">
-    <router-link to="/" class="navLink">Accueil</router-link> 
-    <router-link to="/about" class="navLink">A propos</router-link>
-  </div>
   <router-view/>
 </template>
 
@@ -11,7 +7,7 @@
 body
 {
   background-color: #34495e;
-
+  margin: 0;
 }
 
 
@@ -22,14 +18,9 @@ body
   text-align: center;
   color: #42b983;
   display: flex;
+  justify-content: center;
 }
 
-
-.navLink
-{
-  padding: 0 0.5%;
-  margin: 3% 0 ;
-}
 
 #nav {
   display: flex;
@@ -42,17 +33,14 @@ body
   a {
     font-weight: bold;
     color: #42b983;
-    margin: 0.5rem 1rem;
     padding: 1rem;
     border: solid;
     border-radius: 1rem;
-    opacity: 0.7;
     transition: 0.3s;
 
     &:hover
     {
-      opacity: 1;
-    
+      opacity: 0.7;
 
     }
     
@@ -63,5 +51,64 @@ body
       color: #42b983;
     }
   }
+}
+.navLogo
+{
+    height: 8rem;
+}
+.Feed_1
+{
+  margin: 0 20%;
+}
+.Text
+{
+    color: white;
+}
+
+.navbar
+{
+  overflow: hidden;
+  background-color: #34495e;
+  border-right: 0.1rem white solid;
+  position: fixed;
+  top: 0;
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+
+}
+.navLink
+{
+  margin: 3% ;
+  border-radius: 1rem;
+  &:hover
+  {
+      background-color: white;
+  }
+  &:active
+  {
+      background-color: white;
+  }
+    
+}
+
+.navLinkProfile
+{
+    margin-top: 31rem;
+}
+
+.navbar  a {
+  float: left;
+  display: block;
+  color: #eeeeee;
+  text-align: center;
+  padding: 15px 18px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.navbar a:hover {
+  color: #1c87c9;
 }
 </style>

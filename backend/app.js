@@ -4,13 +4,20 @@ const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
 const dotenv = require('dotenv').config();
+const { Sequelize } = require('sequelize');
 
-//Connexion à la base de données
-mongoose.connect(process.env.DATABASE,
-  {useNewUrlParser: true,
-  useUnifiedTopology: true })
-.then(() => console.log('Connexion à MongoDB réussie !'))
-.catch(() => console.log('Connexion à MongoDB échouée !'));
+//Connexion à la base de donnée MySQL
+const sequelize = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER, process.env.MYSQLPASSWORD, {
+  dialect: process.env.DIALECT,
+  host: process.env.HOST
+});
+try {
+  sequelize.authenticate();
+  console.log('Connecté à la base de données MySQL!');
+} catch (error) {
+  console.error('Impossible de se connecter, erreur suivante :', error);
+}
+
 
 
 //Appelle les routes

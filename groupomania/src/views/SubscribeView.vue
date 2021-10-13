@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="home">
         <subscribe-component/>
     </div>
 </template>

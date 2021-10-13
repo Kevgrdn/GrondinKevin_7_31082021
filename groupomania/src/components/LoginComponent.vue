@@ -32,10 +32,11 @@ export default {
     methods: {
         connect(){
             
-            let email ='"email":' + JSON.stringify(document.getElementById('email').value) + ','
-            let password ='"password":'+ JSON.stringify(document.getElementById('password').value)
-
-            let userInformations = '{' + email+password + '}'
+            let email = JSON.stringify(document.getElementById('email').value)
+            let password = JSON.stringify(document.getElementById('password').value)
+        
+            let userInformations = '{"email":' + email + ',"password": ' + password + '}'
+            console.log(userInformations)
             const requestOptions = {
                 method: 'POST',
                 body: userInformations, 
@@ -44,10 +45,16 @@ export default {
             fetch('http://localhost:3000/api/auth/login', requestOptions)
             .then((response) => response.json())
             .then((apiData) => console.log(apiData))
+                //if (apiData.message = 'Connexion réussie !') {
+                    //this.$router.push("feed")
+                //}
+                //else{
+                   // this.$router.push('login')
+            //}
+
             .catch(() => {
                 console.log(email, password)
             })   
-            this.$router.go("/feed")
         }
     }
 }
@@ -55,14 +62,14 @@ export default {
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 .loginInterface
 {   
     margin: 10rem auto ;
     background-color: white;
     border-radius: 1rem;
-    width: 100%;
+    width: 30%;
     display: flex;
     flex-direction: column;
 }

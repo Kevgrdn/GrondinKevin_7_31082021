@@ -17,15 +17,11 @@ body
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #42b983;
-  display: flex;
-  justify-content: center;
+  width: 100%;
 }
 
 
 #nav {
-  display: flex;
-  flex-direction: column;
-  width: 10%;
   border-right: 0.1rem solid white;
   
 
@@ -69,17 +65,17 @@ body
 {
   overflow: hidden;
   background-color: #34495e;
-  border-right: 0.1rem white solid;
-  position: fixed;
+  border-bottom: 0.1rem white solid;
   top: 0;
-  width: 15%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-around;
+  vertical-align: middle;
 
 }
 .navLink
 {
-  margin: 3% ;
   border-radius: 1rem;
   &:hover
   {
@@ -92,17 +88,13 @@ body
     
 }
 
-.navLinkProfile
-{
-    margin-top: 31rem;
-}
 
-.navbar  a {
-  float: left;
+.navbar  a 
+{
   display: block;
   color: #eeeeee;
   text-align: center;
-  padding: 15px 18px;
+  padding: 0.5rem;
   text-decoration: none;
   font-size: 18px;
   transition: 0.2s;

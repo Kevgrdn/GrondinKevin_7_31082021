@@ -19,6 +19,11 @@ export default {
 </script>
 
 <style lang="scss">
-
+.home
+{
+  justify-content: center;
+  display: flex;
+  margin: auto;
+}
 
 </style>

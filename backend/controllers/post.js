@@ -1,53 +1,51 @@
 //Appelle le modèle
-const Post = require('../models/post');
+const model = require('../models/models');
 
 
 //Accès aux fichiers système
 const fs = require('fs');
 
 
-//Obtenir toutes les sauces
+
+
+//Obtenir tous les post
 exports.getAllPosts = (req, res, next) => {
-  Post.find()
+
+  model.Post.findAll()
      .then(post => res.status(200).json(post))
      .catch(error => res.status(400).json({ error }));
 };
 
 
 
-//Obtenir une sauce spécifique via l'ID
-exports.getOnePost = (req, res, next) => {
-  Post.findOne({ _id: req.params.id })
-    .then(post => res.status(200).json(post))
-    .catch(error => res.status(404).json({ error }))
-};
-
-
-
-//Enregistre une nouvelle sauce
+//Enregistre un nouveau post
 exports.createPost = (req, res, next) => {
-
-  //res.status(200).json(req.body)
-  //Transforme l'élément sauce de la requête en tableau
-  
-  let postObject = JSON.stringify(req.body);
-  
-  //Puis retire l'id du tableau
-  delete postObject._id;
-  
-  //Ajoute la nouvelle sauce grâce au modèle, et au tableau "sauce" de la requête 
-  const post = new Post({
-    ...postObject,
-    //imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-  });
-
-  //Sauvegarde la sauce sur la base de données
-  post.save()
-    .then(() => res.status(201).json({ message: 'Post créé !' }))
-    .catch(error => res.status(400).json({ error }));
+  console.log(req)
+  //Ajoute le nouveau post grâce au modèle, et au tableau "post" de la requête 
+  model.Post.create({
+    description: req.body.description,
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+  })
+  .then(() => res.status(201).json({ message: 'Post créé !' }))
+  .catch(error => res.status(400).json({ error }));
 }
 
 
+// A MODIFIER POUR AJOUTER DES COMMENTAIRES
+exports.createCommentary = (req, res, next) => {
+  
+  //Transforme l'élément post de la requête en tableau
+  let postCommentary = JSON.parse(req.body);
+
+  const commentary = new commentary(
+    postCommentary
+  )
+
+  //Sauvegarde le commentaire sur la base de données
+  commentary.save()
+    .then(() => res.status(201).json({ message: 'Commentaire créé !' }))
+    .catch(error => res.status(400).json({ error }));
+}
 
 //Mettre à jour un post
 exports.updateOnePost = (req, res, next) => {
@@ -56,13 +54,13 @@ exports.updateOnePost = (req, res, next) => {
   const postObject = req.file ?
     {
 
-      //Récupération de l'élément "sauce" de la requête
+      //Récupération de l'élément "post" de la requête
       ...JSON.parse(req.body.post),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
 
-  //Remplace les données de l'ancienne sauce, tout en gardant le même ID  
-  Post.updateOne({ _id: req.params.id }, { ...postObject, _id: req.params.id })
+  //Remplace les données de l'ancien post, tout en gardant le même ID  
+  model.Post.update({ id: req.params.id }, { ...postObject, id: req.params.id })
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
 };
@@ -73,17 +71,24 @@ exports.updateOnePost = (req, res, next) => {
 exports.deleteOnePost = (req, res, next) => {
  
   //Trouve un post via son ID
-  Post.findOne({ _id: req.params.id })
-  
+  model.Post.findAll({
+    where:{
+      id: req.params.id
+    }})
+
   //Puis supprime l'image via "unlink"
     .then(thing => {
     const filename = thing.imageUrl.split('/images/')[1];
     fs.unlink(`images/${filename}`, () => {
         
       //Supprime le post grace à son ID
-      Post.deleteOne({ _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-        .catch(error => res.status(400).json({ error }));
+      model.Post.destroy({
+        where:{
+          id: req.params.id
+        }  
+      })
+      .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+      .catch(error => res.status(400).json({ error }));
       });
     })
     .catch(error => res.status(500).json({ error }));

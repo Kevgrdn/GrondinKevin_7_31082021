@@ -1,21 +1,24 @@
 <template>
     <div class="container-flex row">
-        <div class="navbar">
-            <a href="#feed"><img class="navLogo" src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania"> </a>
-            <a href="#post" class="navLink">Post</a>
-            <a href="#chat" class="navLink">Discussion</a> 
-            <a href="#collegues" class="navLink">Vos collègues</a>
-            <a href="#profile" class="navLink navLinkProfile">Profil</a>
-            <a href="#" class="navLink">Déconnexion</a>
+      <div class="navbar d-flex">
+            <a href="#feed" class="col-2"><img class="navLogo" src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania"> </a>
+            <a href="#post" class="navLink col-2">Post</a>
+            <a href="#users" class="navLink col-2">Vos collègues</a>
+            <a href="#profile" class="navLink navLinkProfile col-2">Profil</a>
+            <a href="#" class="navLink col-2">Déconnexion</a>
         </div>
-        <div class="containerFeed w-50 col-6 center-block mx-auto h-auto">
-          <h1 class="">Post</h1>
-          <div class="w-100 d-flex flex-column ">
-            <textarea id="text" name="text" class="text_area rounded my-2 " required></textarea>
-            <label  class="" for="image">Ajouter un fichier(format Jpg, Jpeg, Png ou MP4 acceptés)</label>
-            <input id="file" class="mx-auto" type="file" ref="image">           
-            <button v-on:click="post" class="btn-primary rounded w-25 mx-auto my-5">Post</button>
-          </div>           
+      <div class="containerFeed w-50 col-6 center-block mx-auto h-auto">
+        <h1 class="">Post</h1>
+        <div class="w-100 d-flex flex-column ">
+          <form @submit.prevent="post" class="border  rounded d-flex flex-column mx-2 p-3 shadow">
+            <textarea v-model.trim="description" id="text" name="text" class="text_area rounded my-2 h-50 " required></textarea>
+              <img v-if="picture" :src="pictureUrl" width="170px" class="d-block w-25" alt="Image">
+                
+               <input type="file" @change="loadPicture" class="mx-auto my-1 py-1 ">
+                     
+            <button class="btn-primary rounded w-25 mx-auto my-2 py-1">Post</button>
+          </form> 
+        </div>
       </div>  
     </div>
 </template>
@@ -27,58 +30,46 @@ export default {
     msg: String
   },
   methods:{
-    post(){
-      let text = '"description":' + JSON.stringify(document.getElementById('text').value) + ',' 
-      let file = '"imageUrl":' + JSON.stringify(document.getElementById('file'))
-
-
-      let postInformations = '{' + text + file + '}'
-      
-      console.log(postInformations)
-      const requestOptions = {
-        method: 'POST',
-        body: postInformations, 
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    post()
+    {
+      const newPost = new FormData()
+      if(this.picture) 
+      {
+        console.log(this.description);
+        newPost.append('imageUrl', this.picture, this.picture.name)
+        newPost.append('description', this.description)
+        newPost.append('userId', this.userId)
+        
+        
+        const requestOptions = {
+                method: 'POST',
+                body: JSON.stringify({'description':this.content, 'userId':this.userId}),
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            }
+        fetch('http://localhost:3000/api/post', requestOptions)
+        .then (console.log(newPost))
+        .catch (err => console.log(err))
       }
-      
-      fetch('http://localhost:3000/api/post/', requestOptions)
-      .then((response) => response.json())
-      .then((apiData) => console.log(apiData))
-      .catch(() => {
-          console.log(postInformations)
-      })   
-
-    }  
-  }
-
+    },
+     loadPicture(event) 
+     {
+                if(event.target.files.length === 0) {return}
+                this.picture = event.target.files[0]
+                
+              
+    },   
+  }  
 }
+
 
 
 </script>
 
 <style  scoped lang="scss">
 
-.container-flex
+.shadow
 {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    
-}
-
-
-
-.containerFeed {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.text_area
-{
-
+  box-shadow: 10px 10px 10px white;
 }
 
 </style>

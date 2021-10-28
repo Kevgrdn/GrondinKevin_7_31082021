@@ -34,8 +34,10 @@
         </form> 
     </div>  
 </template>
+
 <script>
 
+import axios from 'axios'
 export default {
     name: 'Subscribe',
     data(){
@@ -66,119 +68,24 @@ export default {
     },
 
     methods:{
-      
-        checkInput(){
-            
-            //Vérification de l'input firstName
-            if(!this.user.firstName){
-                this.error.firstName = true
-                this.message.firstName = "Le champ prénom n'est pas rempli correctement"
-                document.getElementById('firstNameMessage').classList.remove('d-none')
-                document.getElementById('firstName').classList.add('border-danger')
-            }
-            else if(this.user.firstname && (this.user.firstname.length<2 || this.user.firstname.length>30)) {
-                this.error.firstname = true
-                this.message.firstname = "Le prénom doit avoir entre 2 et 30 caractères"
-                document.getElementById('firstNameMessage').classList.remove('d-none')
-                document.getElementById('firstname').classList.add('border-danger') 
-            }
-                //Si firstName est OK
-            else {
-                this.error.firstname = false
-                document.getElementById('firstNameMessage').classList.add('d-none') 
-                document.getElementById('firstname').classList.remove('border-danger') 
-            }
-            
-            //Vérification de l'input name
-            if(!this.user.name) {
-                this.error.name = true
-                this.message.name = "nom ne peut pas être vide"
-                document.getElementById('nameMessage').classList.remove('d-none') 
-                document.getElementById('name').classList.add('border-danger') 
-            }
-            else if(this.user.name && (this.user.name.length<2 || this.user.name.length>50)) {
-                this.error.name = true
-                this.message.name = "Le nom doit avoir entre 2 et 50 caractères"
-                document.getElementById('nameMessage').classList.remove('d-none') 
-                document.getElementById('name').classList.add('border-danger') 
-            }
-                //Si name est OK
-            else {
-                this.error.name = false
-                document.getElementById('nameMessage').classList.add('d-none') 
-                document.getElementById('name').classList.remove('border-danger') 
-            }
-
-            //Vérification de l'input de l'adresse mail
-            var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            if ( !this.user.email) {
-                this.error.email = true
-                this.message.email = "L'email ne peut pas être vide"
-                document.getElementById('emailMessage').classList.remove('d-none') 
-                document.getElementById('email').classList.add('border-danger') 
-            }
-            else if (this.user.email && !regex.test(this.user.email)) {
-                this.error.email = true
-                this.message.email = "L'email est incorrect"
-                document.getElementById('emailMessage').classList.remove('d-none') 
-                document.getElementById('email').classList.add('border-danger') 
-            }
-                // Si le mail est OK
-            else {
-                this.error.email = false
-                document.getElementById('emailMessage').classList.add('d-none')
-                document.getElementById('email').classList.remove('border-danger')  
-            }
-
-            // Vérification de l'input du mot de passe
-            if(!this.user.password) {
-                this.error.password = true
-                this.message.password = "Le mot de passe ne peut pas être vide"
-                document.getElementById('passwordMessage').classList.remove('d-none') 
-                document.getElementById('password').classList.add('border-danger') 
-            }
-            else if(this.user.password && (this.user.password.length<3 || this.user.password.length>20)) {
-                this.error.password = true
-                this.message.password = "Le mot de passe doit avoir entre 3 et 20 caractères"
-                document.getElementById('passwordMessage').classList.remove('d-none') 
-                document.getElementById('password').classList.add('border-danger') 
-            }
-                // Si le mot de passe est OK
-            else {
-                this.error.password = false
-                document.getElementById('passwordMessage').classList.add('d-none') 
-                document.getElementById('password').classList.remove('border-danger') 
-            }
-        },
-
-
         subscribe(){
             
+            let data = { name: this.user.name, firstname: this.user.firstName, email: this.user.email, password: this.user.password}
+            console.log(data)
 
-            // UTILISER AXIOS
-            let name = JSON.stringify(document.getElementById('name').value) 
-            let firstName =  JSON.stringify(document.getElementById('firstName').value)
-            let email =  JSON.stringify(document.getElementById('email').value)  
-            let password =  JSON.stringify(document.getElementById('password').value) 
-            
-            
-            let userInformations = '{"name":'+ name + ',"firstName":'+ firstName +  ',"email":' + email + ',"password":' + password + '}'
-            console.log(userInformations)
+            axios.post('auth/signup', data)
+            .then((response) => { 
+                console.log(response)
+                if (response.status == 200){
 
-            const requestOptions = {
-                method: 'POST',
-                body: userInformations, 
-                headers: { 'Content-Type': 'application/json; charset=utf-8' },
-            }
-
-
-            fetch('http://localhost:3000/api/auth/signup', requestOptions)
-            .then((response) => response.json())
-            .then((apiData) => console.log(apiData))
-            
-            //.then(() => this.$router.push("feed"))
+                    this.$router.push("/")
+                } 
+                else{
+                    this.$router.push("subscribe")
+                } 
+            })
             .catch(() => {
-                console.log(userInformations)
+                console.log(data)
             })
         }
     }

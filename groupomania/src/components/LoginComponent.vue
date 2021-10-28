@@ -1,59 +1,74 @@
 <template>
-    <div class="loginInterface">
-        <img class="Logo" src="../assets/icon-left-font-monochrome-black.png" alt="Logo">
-        <div class="phraseAccueil">Bienvenue sur le portail de connexion</div>
+    <form @submit.prevent="connect">
+        <div class="loginInterface">
+            <img class="Logo" src="../assets/icon-left-font-monochrome-black.png" alt="Logo">
+            <div class="phraseAccueil">Bienvenue sur le portail de connexion</div>
 
-        <div>
-            <label for="email">E-mail</label>
-            <br>
-            <input type="text" id="email" class="form email">
-        </div>    
-        <div>
-            <label for="password">Mot de passe</label>
-            <br>
-            <input type="password" id="password" class="form password">
+                <div>
+                    <label for="email">E-mail</label>
+                    <br>
+                    <input v-model.trim="user.email" type="text" id="email" class="form email">
+                </div>    
+                <div>
+                    <label for="password">Mot de passe</label>
+                    <br>
+                    <input v-model.trim="user.password" type="password" id="password" class="form password">
+                </div>
+            
+            <div class="lienRoutes">
+                <button class="btn-primary connect">Se connecter</button>
+                <router-link to="/subscribe" class="btn-secondary">S'inscrire</router-link>
+            </div>
+            
         </div>
-        <div class="lienRoutes">
-            <button v-on:click="connect" type="submit" class="btn-primary connect">Se connecter</button>
-            <router-link to="/subscribe" class="btn-secondary">S'inscrire</router-link>
-        </div>
-    </div>  
+    </form>  
 </template>
 
 <script>
 
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:3000/api/'
 
 export default {
-    name: 'Login',
-    props: {
-        msg: String
-    },
 
+
+
+    name: 'Login',
+   
+    data(){
+        return{
+            user: {
+                email:'',
+                password:''
+            }
+        }
+    },
+    
+    
+    
+    
+    
     methods: {
         connect(){
             
-            let email = JSON.stringify(document.getElementById('email').value)
-            let password = JSON.stringify(document.getElementById('password').value)
-        
-            let userInformations = '{"email":' + email + ',"password": ' + password + '}'
-            console.log(userInformations)
-            const requestOptions = {
-                method: 'POST',
-                body: userInformations, 
-                headers: { 'Content-Type': 'application/json; charset=utf-8' },
-            }
-            fetch('http://localhost:3000/api/auth/login', requestOptions)
-            .then((response) => response.json())
-            .then((apiData) => console.log(apiData))
-                //if (apiData.message = 'Connexion réussie !') {
-                    //this.$router.push("feed")
-                //}
-                //else{
-                   // this.$router.push('login')
-            //}
-
+            
+            let data = { email: this.user.email, password: this.user.password }
+            console.log(data)
+            axios.post('auth/login', data)
+            .then((response) =>{console.log(response)
+               
+                if(response.status == 200){
+                    localStorage.setItem('userInformations', JSON.stringify(response.data.user), )
+                    localStorage.setItem('token', response.data.token) 
+                    this.$router.push('feed')
+                }
+                else
+                {
+                    this.$router.push('login')
+                }
+            })
             .catch(() => {
-                console.log(email, password)
+                console.log(data)
             })   
         }
     }
@@ -77,8 +92,8 @@ export default {
 .Logo
 {
     text-align: center;
-    height: 20rem;
     margin: 0 1rem;
+    width: auto;
 
 }
 label

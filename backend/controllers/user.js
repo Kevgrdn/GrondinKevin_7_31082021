@@ -11,14 +11,14 @@ const model = require("../models/models")
 exports.signup = (req, res, next) => {
     //Bcrypt va hasher le mot de passe 10x afin de s'assurer de la sécurité des données.
     console.log(req.body.name)
-    
+    if (req.body.email == null || req.body.password == null) return res.status(400)
     bcrypt.hash(req.body.password, 10)
     
     //Crée un nouvel utilisateur et hash le mot de passe
     .then(hash => {
         const user = new model.User({
             name: req.body.name,
-            firstname: req.body.firstName,
+            firstname: req.body.firstname,
             email: req.body.email,
             password: hash,
             imageUrl: '',
@@ -27,11 +27,15 @@ exports.signup = (req, res, next) => {
     
     //Puis l'utilisateur va etre enregistré dans la base de données
     user.save()
-        .then(() => { 
-            res.status(201).json({ message: 'Utilisateur créé !' })})
-        .catch(error => res.status(400).json({ error }));
+            .then(() => {
+                res.status(200).send({ message: 'Utilisateur créé !' })
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(400).send({ error })
+            })
     })
-    .catch(error => res.status(500).json({ error }));
+    .catch(error => res.status(500).send({  error  }))
 };
 
 
@@ -77,3 +81,31 @@ exports.getAllUsers = (req, res, next) => {
        .then(post => res.status(200).json(post))
        .catch(error => res.status(400).json({ error }));
   };
+
+//Affiche un utilisateur
+exports.getOneUser = (req, res, next) => {
+    model.User.findOne({
+       where: { id : req.params.id }
+    })
+    .then(user => res.status(200).json(user))
+    .catch(error => res.status(400).json({error}))
+}
+
+exports.updateUser = (req, res, next) => {
+    console.log(req.body)
+
+    model.User.update({
+        email : req.body.email,
+        name: req.body.name,
+        firstName: req.body.firstname,
+        imageUrl:'',
+        },
+        {
+        where:{
+            id: req.params.id
+        }
+    })
+    .then(user => res.status(200).json(user))
+    .catch(error => res.status(400).json({error}))
+
+}

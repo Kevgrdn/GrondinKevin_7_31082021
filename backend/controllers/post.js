@@ -11,7 +11,13 @@ const fs = require('fs');
 //Obtenir tous les post
 exports.getAllPosts = (req, res, next) => {
 
-  model.Post.findAll()
+  model.Post.findAll({
+    
+    include:[
+      {model: model.User, as: 'author'}
+    ],
+    order: [['createdAt', 'DESC']]
+  })
      .then(post => res.status(200).json(post))
      .catch(error => res.status(400).json({ error }));
 };
@@ -24,6 +30,7 @@ exports.createPost = (req, res, next) => {
   //Ajoute le nouveau post grâce au modèle, et au tableau "post" de la requête 
   model.Post.create({
     description: req.body.description,
+    userId : req.body.userId,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
   })
   .then(() => res.status(201).json({ message: 'Post créé !' }))
@@ -34,17 +41,23 @@ exports.createPost = (req, res, next) => {
 // A MODIFIER POUR AJOUTER DES COMMENTAIRES
 exports.createCommentary = (req, res, next) => {
   
-  //Transforme l'élément post de la requête en tableau
-  let postCommentary = JSON.parse(req.body);
+  console.log(req)
 
-  const commentary = new commentary(
-    postCommentary
-  )
+  model.Commentary.create({
+    content: req.body.content,
+    userId: req.body.userId,
+    postId: req.body.post_id
+  })
+  .then(() => res.status(201).json({ message: 'Commentaire créé' }))
+  .catch(error => res.status(400).json({ error }));
+}
 
-  //Sauvegarde le commentaire sur la base de données
-  commentary.save()
-    .then(() => res.status(201).json({ message: 'Commentaire créé !' }))
-    .catch(error => res.status(400).json({ error }));
+exports.getCommentaries= (req, res, next)=> {
+
+  model.Commentary.findAll({
+  })
+  .then(post => res.status(200).json(post))
+  .catch(error => res.status(400).json({ error }));
 }
 
 //Mettre à jour un post

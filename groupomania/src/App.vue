@@ -37,7 +37,6 @@ body
     &:hover
     {
       opacity: 0.7;
-
     }
     
     
@@ -80,6 +79,7 @@ body
   &:hover
   {
       background-color: white;
+      font-size: 1.2rem;
   }
   &:active
   {
@@ -97,7 +97,7 @@ body
   padding: 0.5rem;
   text-decoration: none;
   font-size: 18px;
-  transition: 0.2s;
+  transition: 0.3s;
 }
 
 .navbar a:hover {

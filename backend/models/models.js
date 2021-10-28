@@ -57,7 +57,7 @@ exports.Commentary = Commentary
 //l'utilisateur peut avoir plusieurs Commentaires
 User.hasMany(Post, {foreignKey: 'userId'})
 
-Post.belongsTo(User, {foreignKey: 'userId'})
+Post.belongsTo(User, {foreignKey: 'userId', as:'author'})
 
 //un utilisateur peut avoir plusieurs Commentaires
 User.hasMany(Commentary, {foreignKey: 'userId'})

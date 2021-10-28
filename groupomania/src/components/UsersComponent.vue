@@ -9,7 +9,7 @@
         </div>
         <div class=" d-flex flex-column col-8 w-100">
             <h1 class=" my-3">Collègues</h1>
-            <div id="user" class="user py-5 px-2 d-flex flex-wrap justify-content-center "></div>
+            <div id="user" class="user py-5 px-2 d-flex flex-wrap justify-content-center  "></div>
         </div>
     </div>
 </template>
@@ -25,7 +25,7 @@ export default {
             .then((apidata) =>
                 apidata.forEach(user => {
                     document.querySelector('.user').innerHTML
-                    +='<div class="my-3 mx-2 col-3   border rounded shadow"><div> Nom : ' + user.name + '</div>'
+                    +='<div class=" my-3 mx-2 col-3 userProfile  border rounded shadow"><div> Nom : ' + user.name + '</div>'
                     +'<div>Prénom :' + user.firstname + '</div>'
                     +'<div>Photo de profil : ' + user.imageUrl + '</div></div>'
                     
@@ -43,13 +43,21 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
-
-.containerFeed
+.userProfile
 {
-    width: auto;
-    margin: 0 20%;
+    transition: 0.7s ease-in-out;
+
+    &:hover
+    {
+        background-color: white;
+        color: #1c87c9;
+        width: 21rem;
+        
+
+
+    }
 }
 
 

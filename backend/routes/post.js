@@ -13,9 +13,9 @@ router.get('',  postCtrl.getAllPosts)
 router.post('', multer, postCtrl.createPost)
 router.post('/:id/commentary', postCtrl.createCommentary)
 router.get('/:id/commentary', postCtrl.getCommentaries)
-router.post('/:id/like', postCtrl.likeOrDislikePost)
-router.put('/:id', auth, multer, postCtrl.updateOnePost)
-router.delete('/:id', auth, postCtrl.deleteOnePost)
+router.put('/:id/like', postCtrl.likeOrDislikePost)
+router.put('/:id',  multer, postCtrl.updateOnePost)
+router.delete('/:id',  postCtrl.deleteOnePost)
 
 
 module.exports = router;

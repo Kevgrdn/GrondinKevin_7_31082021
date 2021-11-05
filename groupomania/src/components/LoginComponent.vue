@@ -1,8 +1,10 @@
 <template>
-    <form @submit.prevent="connect">
-        <div class="loginInterface">
-            <img class="Logo" src="../assets/icon-left-font-monochrome-black.png" alt="Logo">
-            <div class="phraseAccueil">Bienvenue sur le portail de connexion</div>
+    <form @submit.prevent="connect" class="row w-100 m-top-perso">
+        <div class="col-sm-6 col-md-4 m-auto ">
+            <div class="col-sm-12  bg-perso d-flex flex-column m-auto rounded py-3 ">
+                <div class="phraseAccueil">Bienvenue sur le portail de connexion   
+                </div>
+                <img class=" m-auto w-25" src="../assets/icon-left-font-monochrome-white.png" alt="Logo">
 
                 <div>
                     <label for="email">E-mail</label>
@@ -15,11 +17,13 @@
                     <input v-model.trim="user.password" type="password" id="password" class="form password">
                 </div>
             
-            <div class="lienRoutes">
-                <button class="btn-primary connect">Se connecter</button>
-                <router-link to="/subscribe" class="btn-secondary">S'inscrire</router-link>
+                <div class="lienRoutes">
+                    <button class="btn-primary connect">Se connecter</button>
+                </div>
+                <div> Vous n'avez pas de compte ?
+                </div>
+                <router-link to="/subscribe" class="">Inscrivez-vous</router-link>
             </div>
-            
         </div>
     </form>  
 </template>
@@ -79,23 +83,15 @@ export default {
 
 <style lang="scss">
 
-.loginInterface
-{   
-    margin: 10rem auto ;
-    background-color: white;
-    border-radius: 1rem;
-    width: 30%;
-    display: flex;
-    flex-direction: column;
+
+
+.m-top-perso{
+    margin-top: 8rem;
+}
+.bg-perso{
+    background-color: #222f3d;
 }
 
-.Logo
-{
-    text-align: center;
-    margin: 0 1rem;
-    width: auto;
-
-}
 label
 {
     color: black;

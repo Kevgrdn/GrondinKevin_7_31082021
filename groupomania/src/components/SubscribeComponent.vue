@@ -1,37 +1,45 @@
 <template>
-    <div class="loginInterface">
-        <img class="Logo" src="../assets/icon-left-font-monochrome-black.png" alt="Logo">
-        <div class="phraseAccueil">Bienvenue sur le portail d'inscription</div>
-        <form>
-            <div>
-                <label for="name">Nom</label>
-                <br>
-                <input v-model="user.name" id="name" type="text" class="form">
-                <p id="nameMessage">{{message.name}}</p>
-            </div>   
-            <div>
-                <label for="firstName">Prénom</label>
-                <br>
-                <input v-model="user.firstName" id="firstName" type="text" class="form">
-                <p id="nameMessage">{{message.firstName}}</p>
-            </div>          
-            <div>
-                <label for="email">E-mail</label>
-                <br>
-                <input v-model="user.email" id="email" type="email" class="form">
-                <p id="emailMessage">{{message.email}}</p>
-            </div>    
-            <div>
-                <label for="password">Mot de passe</label>
-                <br>
-                <input v-model="user.password" id="password" type="password" class="form">
-                <p id="passwordMessage">{{message.password}}</p>
+    <div class="">
+        <div class="m-top-perso-2 mx-auto col-12 col-md-8 d-flex flex-column">
+            <div class="bg-perso d-flex flex-column m-auto col-10 rounded py-3">
+            <div class="phraseAccueil">
+                Bienvenue sur le portail d'inscription   
             </div>
-            <div class="lienRoutes">
-                <button v-on:click="subscribe" class="btn-primary">S'inscrire</button>
-                <router-link to="/" class="btn-secondary">Se connecter</router-link>
-            </div>
-        </form> 
+            <img class=" w-25 m-auto" src="../assets/icon-left-font-monochrome-white.png" alt="Logo">
+            <form>
+                <div>
+                    <label for="name">Nom</label>
+                    <br>
+                    <input v-model="user.name" id="name" type="text" class="form">
+                    <p id="nameMessage">{{message.name}}</p>
+                </div>   
+                <div>
+                    <label for="firstName">Prénom</label>
+                    <br>
+                    <input v-model="user.firstName" id="firstName" type="text" class="form">
+                    <p id="nameMessage">{{message.firstName}}</p>
+                </div>          
+                <div>
+                    <label for="email">E-mail</label>
+                    <br>
+                    <input v-model="user.email" id="email" type="email" class="form">
+                    <p id="emailMessage">{{message.email}}</p>
+                </div>    
+                <div>
+                    <label for="password">Mot de passe</label>
+                    <br>
+                    <input v-model="user.password" id="password" type="password" class="form">
+                    <p id="passwordMessage">{{message.password}}</p>
+                </div>
+                <div class="">
+                    <button v-on:click="subscribe" class="btn-primary">S'inscrire</button>
+                    <div class="d-flex m-auto flex-column my-3">Vous avez déjà un compte ?
+                        <router-link to="/" class="">Connectez-vous</router-link>
+                    </div>
+                </div>
+            </form>
+            </div> 
+        </div>
     </div>  
 </template>
 
@@ -92,7 +100,9 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
-
+.m-top-perso-2{
+    margin-top: 12rem;
+}
 </style>

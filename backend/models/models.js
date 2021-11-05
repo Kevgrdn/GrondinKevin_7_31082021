@@ -62,6 +62,6 @@ Post.belongsTo(User, {foreignKey: 'userId', as:'author'})
 //un utilisateur peut avoir plusieurs Commentaires
 User.hasMany(Commentary, {foreignKey: 'userId'})
 
-Commentary.belongsTo(User, {foreignKey: 'userId'})
+Commentary.belongsTo(User, {foreignKey: 'userId', as:'author'})
 
 sequelize.sync()

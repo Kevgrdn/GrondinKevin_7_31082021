@@ -1,5 +1,6 @@
 //Appelle le modèle
 const model = require('../models/models');
+const { Sequelize } = require('sequelize');
 
 
 //Accès aux fichiers système
@@ -12,7 +13,11 @@ const fs = require('fs');
 exports.getAllPosts = (req, res, next) => {
 
   model.Post.findAll({
-    
+    attributes: [
+      'id','description', 'imageUrl', 'userId', 'liked',
+      [Sequelize.fn('date_format', Sequelize.col('created_at'), 'le %d/%m/%Y à %H:%i:%s'), 'createdAt']
+    ],
+
     include:[
       {model: model.User, as: 'author'}
     ],
@@ -38,27 +43,38 @@ exports.createPost = (req, res, next) => {
 }
 
 
-// A MODIFIER POUR AJOUTER DES COMMENTAIRES
+//Ajouter un commentaire
 exports.createCommentary = (req, res, next) => {
   
   console.log(req)
-
+  
   model.Commentary.create({
     content: req.body.content,
     userId: req.body.userId,
-    postId: req.body.post_id
+    postId: req.body.postId
   })
   .then(() => res.status(201).json({ message: 'Commentaire créé' }))
   .catch(error => res.status(400).json({ error }));
 }
 
+
+//Afficher les commentaires d'un post
 exports.getCommentaries= (req, res, next)=> {
 
   model.Commentary.findAll({
+    where:{
+      postId: req.params.id
+    },
+    include:[
+      {model: model.User, as: 'author'}
+    ],
+    order: [['createdAt', 'DESC']]
   })
   .then(post => res.status(200).json(post))
   .catch(error => res.status(400).json({ error }));
 }
+
+
 
 //Mettre à jour un post
 exports.updateOnePost = (req, res, next) => {
@@ -84,16 +100,19 @@ exports.updateOnePost = (req, res, next) => {
 exports.deleteOnePost = (req, res, next) => {
  
   //Trouve un post via son ID
-  model.Post.findAll({
+  model.Post.findOne({
     where:{
       id: req.params.id
     }})
 
   //Puis supprime l'image via "unlink"
     .then(thing => {
+      console.log(thing)
     const filename = thing.imageUrl.split('/images/')[1];
+    console.log(filename)
     fs.unlink(`images/${filename}`, () => {
         
+    
       //Supprime le post grace à son ID
       model.Post.destroy({
         where:{
@@ -112,47 +131,14 @@ exports.deleteOnePost = (req, res, next) => {
 //Aimer un post
 exports.likeOrDislikePost = (req, res, next) => {
   
-  //Si on like le post
-  if (req.body.like === 1) { 
-    
-    //On ajoute 1 like et on l'envoie dans le tableau "usersLiked"
-    Post.updateOne({ _id: req.params.id }, { $inc: { likes: req.body.like++ }, $push: { usersLiked: req.body.userId } })
-      .then((post) => res.status(200).json({ message: 'Like' }))
-      .catch(error => res.status(400).json({ error }));
-  } 
-  
-  //Si l'utilisateur n'aime pas le post
-  else if (req.body.like === -1) { 
-    
-    //On ajoute 1 dislike et on l'envoie dans le tableau "usersDisliked"
-    Post.updateOne({ _id: req.params.id }, { $inc: { dislikes: (req.body.like++) * -1 }, $push: { usersDisliked: req.body.userId } }) 
-      .then((post) => res.status(200).json({ message: 'Dislike' }))
-      .catch(error => res.status(400).json({ error }));
-  } 
-  else { 
-    
-    //Si like === 0 l'utilisateur supprime son vote
-    Post.findOne({ _id: req.params.id })
-    .then(post => {
-        
-      //Si le tableau "userLiked" contient l'ID de l'utilisateur
-      if (post.usersLiked.includes(req.body.userId)) { 
-        
-        //On enlève un like de "userLiked" 
-        Post.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
-            .then((post) => { res.status(200).json({ message: 'Like supprimé' }) })
-            .catch(error => res.status(400).json({ error }))
-      } 
+  model.Post.update({liked: Sequelize.literal('liked + 1') },{
+    where:{
+      id: req.params.id,
       
-      //Si le tableau "userDisliked" contient l'ID de l'utilisateur
-      else if (post.usersDisliked.includes(req.body.userId)) {
-          
-        //Enlève un dislike 
-        Post.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
-          .then((post) => { res.status(200).json({ message: 'Dislike supprimé' }) })
-          .catch(error => res.status(400).json({ error }))
-      }
-    })
-    .catch(error => res.status(400).json({ error }));
-  }
+    }
+
+  })
+  .then(() => res.status(200).json({ message: 'Like modifié !'}))
+  .catch(error => res.status(400).json({ error }));
+  
 };

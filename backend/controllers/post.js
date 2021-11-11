@@ -36,7 +36,8 @@ exports.createPost = (req, res, next) => {
   model.Post.create({
     description: req.body.description,
     userId : req.body.userId,
-    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    liked: 0
   })
   .then(() => res.status(201).json({ message: 'Post créé !' }))
   .catch(error => res.status(400).json({ error }));
@@ -47,7 +48,7 @@ exports.createPost = (req, res, next) => {
 exports.createCommentary = (req, res, next) => {
   
   console.log(req)
-  
+
   model.Commentary.create({
     content: req.body.content,
     userId: req.body.userId,
@@ -55,6 +56,9 @@ exports.createCommentary = (req, res, next) => {
   })
   .then(() => res.status(201).json({ message: 'Commentaire créé' }))
   .catch(error => res.status(400).json({ error }));
+  
+  
+  
 }
 
 
@@ -62,9 +66,14 @@ exports.createCommentary = (req, res, next) => {
 exports.getCommentaries= (req, res, next)=> {
 
   model.Commentary.findAll({
+
     where:{
       postId: req.params.id
     },
+    attributes: [
+      'id','content', 'postId', 'userId', 
+      [Sequelize.fn('date_format', Sequelize.col('created_at'), 'le %d/%m/%Y à %H:%i:%s'), 'createdAt']
+    ],
     include:[
       {model: model.User, as: 'author'}
     ],
@@ -131,7 +140,14 @@ exports.deleteOnePost = (req, res, next) => {
 //Aimer un post
 exports.likeOrDislikePost = (req, res, next) => {
   
-  model.Post.update({liked: Sequelize.literal('liked + 1') },{
+  
+  if (req.body.like == 1) {
+     like = 'liked + 1'
+  }
+  else {
+     like = 'liked - 1'
+  }
+  model.Post.update({liked: Sequelize.literal(like) },{
     where:{
       id: req.params.id,
       

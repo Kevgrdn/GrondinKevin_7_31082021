@@ -1,38 +1,40 @@
 <template>
-    <div class="w-100">
-        <div class="navbar d-flex">
-            <a href="#feed" class="col-2"><img class="navLogo" src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania"> </a>
-            <a href="#users" class="navLink col-2">Vos collègues</a>
-            <a href="#profile" class="navLink navLinkProfile col-2">Profil</a>
-            <a href="#" class="navLink col-2">Déconnexion</a>
-        </div>
-        <div class=" d-flex flex-column col-8 w-100">
+    <div class="row">
+        <div class="row justify-content-around">
             <h1 class=" my-3">Collègues</h1>
-            <div id="user" class="user py-5 px-2 d-flex flex-wrap justify-content-center  "></div>
+            <div v-for="user in users" v-bind:key="user.id" class=" bg-perso rounded-perso col-3 py-1 m-1">
+                <img v-if="user.imageUrl !==  '' || null"  :src=user.imageUrl class="pdp my-auto">
+                <img v-if="user.imageUrl ==  '' || null"  src="https://st3.depositphotos.com/19428878/36416/v/450/depositphotos_364169666-stock-illustration-default-avatar-profile-icon-vector.jpg" class="pdp my-auto">
+                <div class="fw-bold "> {{user.firstname}} {{user.name}}
+                </div>
+                
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name:'users',
+    data(){
+        return{
+            users:[]
+        }
+    },  
     methods:{
+
         showUsers(){
-            
-            fetch('http://localhost:3000/api/auth/users')
-            .then((response) => response.json())
-            .then((apidata) =>
-                apidata.forEach(user => {
-                    document.querySelector('.user').innerHTML
-                    +='<div class=" my-3 mx-2 col-3 userProfile  border rounded shadow"><div> Nom : ' + user.name + '</div>'
-                    +'<div>Prénom :' + user.firstname + '</div>'
-                    +'<div>Photo de profil : ' + user.imageUrl + '</div></div>'
-                    
-                }))
+            axios.get('auth/users')
+            .then((res) => {
+                console.log(res)
+                this.users = res.data
+                })
             .catch(() => {
                 console.log()
             })
         }
+        
     },
     beforeMount(){
         this.showUsers()

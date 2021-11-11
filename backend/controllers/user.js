@@ -92,9 +92,30 @@ exports.getOneUser = (req, res, next) => {
 }
 
 exports.updateUser = (req, res, next) => {
-    console.log(req.body)
+    console.log(req)
+        if (req.body.name || req.body.firstname || req.body.email !== "" || null ) {
+            model.User.update({
+                email : req.body.email,
+                name: req.body.name,
+                firstName: req.body.firstname,
+                //imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+            },
+                {
+                where:{
+                    id: req.params.id
+                }
+            })
+            .then(user => res.status(200).json(user))
+            .catch(error => res.status(400).json({error}))
+        }
+        
+        else{
+            console.log('error')
+        }
+    
+  
 
-    model.User.update({
+    /*model.User.update({
         email : req.body.email,
         name: req.body.name,
         firstName: req.body.firstname,
@@ -106,6 +127,18 @@ exports.updateUser = (req, res, next) => {
         }
     })
     .then(user => res.status(200).json(user))
-    .catch(error => res.status(400).json({error}))
+    .catch(error => res.status(400).json({error}))*/
 
+}
+
+//Supprimer un compte
+exports.deleteUser = (req, res, next) => {
+    model.User.destroy({
+        where:{
+            id: req.params.id
+        }  
+    })
+    .then(() => res.status(200).json({ message: 'Compte supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+    
 }

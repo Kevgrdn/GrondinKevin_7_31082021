@@ -1,49 +1,74 @@
 <template>
-    <div class="container-flex">
-        <div class="my-3 row">
-            <div v-for="post in posts" v-bind:key="post.id" class="bg-perso col-8 d-flex flex-column mx-auto my-2 rounded-perso">
-                <div class="my-3" v-bind:id="post.id">
-                    <div class="d-flex">
-                        <img :src="post.author.imageUrl" class="mx-2  pdp d-inline ">
-                        <div class=" text-start">
-                            <div class="mx-2  fw-bolder">{{post.author.firstname}} {{post.author.name}}</div>
-                            <div class="mx-2 fs-6 fst-italic">{{post.createdAt}} </div>
-                        </div>
-                    </div>
-                    <div class="colorSecondary py-2 my-2 rounded">
-                        <div class="my-2 text-start mx-1">{{post.description}}</div>
-                        <img :src="post.imageUrl" class="w-100">
-                    </div>
-                    <button @click="likePost" :data-id="post.id" class="btn-primary my-2 col-4" >{{post.liked}} <i class="far fa-thumbs-up"></i></button>
-                    <!--<button v-if="this.userId == post.userId" :data-id="post.id" @click="updatePost" class="btn-secondary col-4  "> Modifier</button>
-                    <textarea v-model.trim="description" name="" id="" cols="30" rows="10"></textarea>!-->
-                    <button @click="deletePost" :data-id="post.id" class="btn-danger col-4"><i class="far fa-trash-alt"></i></button>
-                </div>
-                    <div v-bind:id="post.id" class="row my-2 justify-content-center">
-                        <textarea v-model.trim="comments" name="" id="comments" cols="auto" rows="auto" placeholder="Votre commentaire" required class=" h-100 col-10"></textarea>
-                        <button :data-id="post.id" @click="sendCommentaries" class="btn-primary  mx-1 col-1  "><i class="far fa-comments"></i></button>
-                    </div>
-                <div v-for="comment in commentaries.comments" v-bind:key="comment.id" class="row mx-1 justify-content-around">
-                    <div v-if="comment.postId == post.id" class="col-1  ">
-                        <img :src=comment.author.imageUrl alt="Photo de profil" class=" pdp2  ">
-                    </div>
-                    <div v-if="comment.postId == post.id" class="my-2 bg-secondary rounded col-10 ">
-                        <div v-if="comment.postId == post.id">{{comment.author.firstname}}</div>
-                        <div v-if="comment.postId == post.id">{{comment.author.name}}</div>
-                        <div v-if="comment.postId == post.id">{{comment.content}}</div>
-                    </div>
-                   
-
+    <div class="row">
+        
+        <!--Boucle sur les posts + Affichage des posts-->
+        <div v-for="post in posts" v-bind:key="post.id" class="bg-perso shadow col-11 col-md-8 my-2 flex-column mx-auto rounded-perso">
+            <div class="my-3 " v-bind:id="post.id">
+                <div class="d-flex">
                     
-                </div>
-                <div v-bind:id="post.id">
-                    <button :data-id="post.id" @click="showCommentaries" class="btn-primary my-3"><i class="far fa-comment-dots"></i></button>
+                    <!--Auteur du post + Heure du post-->
+                    <img v-if="post.author.imageUrl !== '' || null" :src="post.author.imageUrl" class="mx-2  pdp2 d-inline ">
+                    <img v-if="post.author.imageUrl == '' || null" src="https://st3.depositphotos.com/19428878/36416/v/450/depositphotos_364169666-stock-illustration-default-avatar-profile-icon-vector.jpg" class="mx-2  pdp2 d-inline ">
+                    <div class=" text-start">
+                        <div class="mx-2  fw-bolder">{{post.author.firstname}} {{post.author.name}}</div>
+                        <div class="mx-2 fs-6 fst-italic">{{post.createdAt}} </div>
+                    </div>
                 </div>
                 
-                
+                <!--Description du post + Photo-->
+                <div class="colorSecondary py-2 my-2 rounded">
+                    <div class="my-2 text-start mx-1">{{post.description}}</div>
+                    <img  :src="post.imageUrl" class="w-100">
+                </div>
+
+                <!--Boutons Like/Delete du post-->
+                <button @click="likePost" :data-id="post.id" class="btn-primary rounded my-2 col-4" title="J'aime">
+                    <span :data-id="post.id">{{post.liked}}</span>  <i :data-id="post.id" class="far fa-thumbs-up"></i></button>
+                <button v-if="post.author.id == this.userId " @click="deletePost" :data-id="post.id" class="btn-danger  py-2 rounded col-4" title="Supprimer"><i :data-id="post.id" class="far fa-trash-alt"></i></button>
             </div>
-        </div>  
-    </div>
+
+                <!--Partie création de commentaires-->
+                <div v-bind:id="post.id" class="row my-2 justify-content-center">
+                    <textarea  v-model.trim="comments[post.id]"  :name="'comment-' + post.id " id="comments" cols="auto" rows="auto" placeholder="Votre commentaire" required class="col-9 col-md-10"></textarea>
+                    <button  :data-id="post.id" @click="sendCommentaries" class="btn-primary  mx-1 col-2  col-md-1 " title="Envoyer le commentaire"><i :data-id="post.id" class="far fa-comments"></i></button>
+                </div>
+            
+            <!--Boucle sur les commentaires du post avec l'ID de celui-ci-->    
+            <div v-for="comment in commentaries.comments" v-bind:key="comment.id" class="row mx-1 justify-content-around">
+
+                
+                <!--Partie commentaires-->
+                <div v-if="comment.postId == post.id && this.isActive == true" class="my-2 colorSecondary rounded-perso col-12 my-3 py-2">
+                    
+                    <!--Photo de profil de l'auteur du commentaire-->
+                    <div v-if="comment.postId == post.id" class="w-auto px-0 d-flex align-items-center">
+                        <img v-if="comment.author.imageUrl !== '' || null" :src="comment.author.imageUrl" alt="Photo de profil" class=" pdp2  ">
+                        <img v-if="comment.author.imageUrl == '' || null" src="https://st3.depositphotos.com/19428878/36416/v/450/depositphotos_364169666-stock-illustration-default-avatar-profile-icon-vector.jpg" class="pdp2 my-2"> 
+                    </div>
+
+                    <!--Auteur du commentaire + heure du commentaire-->
+                    <div v-if="comment.postId == post.id" class="text-start fw-bold">
+                        {{comment.author.firstname}} {{comment.author.name}}
+                    </div>
+                    <div v-if="comment.postId == post.id" class="color-secondary fst-italic text-start">
+                        {{comment.createdAt}}
+                    </div>
+
+                    <!--Contenu du commentaire-->
+                    <div v-if="comment.postId == post.id" class="bg-secondary my-3 text-start p-2 rounded-perso ">
+                        {{comment.content}}
+                    </div>
+                </div>    
+            </div>
+
+            <!--Bouton "Afficher les commentaires"-->
+            <div v-bind:id="post.id">
+                <button :data-id="post.id" @click="showCommentaries" class="btn-primary rounded-perso shadow my-3" title="Afficher les commentaires"><i :data-id="post.id" class="far fa-comment-dots"></i> Afficher les commentaires</button>
+            </div>
+            
+            
+        </div>
+    </div>  
 </template>
 
 <script>
@@ -56,10 +81,12 @@ export default {
     data(){
         return{
             posts:[],
-            comments:'',
+            comments:[],
             description:'',
             liked: 0,
             pdp:'',
+            isActive: false,
+            currentPost:'',
             userId: JSON.parse(localStorage.getItem('userInformations')).id,
             commentaries:{
                 comments:[],
@@ -73,9 +100,10 @@ export default {
         afficherPosts(){
             axios.get('/post')
             .then((response) => {
+                this.posts = localStorage.setItem('postInfo', JSON.stringify(response.data))  
                 this.posts = response.data
-                console.log(this.posts)  
-            } )
+                console.log(this.posts)
+            })
             .catch(err => console.log(err))    
             
                              
@@ -85,11 +113,15 @@ export default {
         },
         sendCommentaries(){
             var id = event.target.getAttribute('data-id');
-            console.log(id)
-            axios.post('/post/'+ id +'/commentary', {content: this.comments, userId: this.userId, postId: id})
+
+            //console.log(event.target)
+            
+            axios.post('/post/'+ id +'/commentary', {content: this.comments[id], userId: this.userId, postId: id})
             .then(res => {
-                console.log(res)
+            console.log(res)})
+            .catch(err => {console.log(err)
             })
+            
         },
         showCommentaries(){
             var id = event.target.getAttribute('data-id');
@@ -98,6 +130,8 @@ export default {
             .then(res => {
                 this.commentaries.comments = res.data
                 console.log(res.data)
+                this.toggle()
+
                 })
             .catch(err => console.log(err))
         },
@@ -106,10 +140,15 @@ export default {
             
             if (this.liked == 0) {
                 this.liked = 1 
+                document.querySelector("span[data-id='" + id + "']").textContent = parseInt(document.querySelector("span[data-id='" + id + "']").textContent) + 1 
+
             }
-            else {
+            else  {
                 this.liked = 0
+                document.querySelector("span[data-id='" + id + "']").textContent = parseInt(document.querySelector("span[data-id='" + id + "']").textContent) - 1 
+
             }
+            console.log(this.liked)
             axios.put('/post/' + id +'/like', { like : this.liked})
                 .then(res => {
                 console.log(res.data)
@@ -129,7 +168,6 @@ export default {
 
         },
         deletePost(){
-        
             var id = event.target.getAttribute('data-id')
             axios.delete('/post/' + id)
             .then(res => {
@@ -138,6 +176,15 @@ export default {
             .catch(err => console.log(err))
 
 
+        },
+        toggle() {
+            if (!this.isActive) {
+                this.isActive = true;
+                console.log(this.isActive)
+            } else {
+                this.isActive = false;
+                console.log(this.isActive)
+            }
         },
         disconnect(){
             localStorage.clear()
@@ -165,8 +212,8 @@ export default {
 
 }
 .pdp2{
-    width: 3rem;
-    height: 3rem;
+    width: 4rem;
+    height: 4rem;
     border-radius: 10rem 10rem;
     object-fit: cover;
     padding: 0;
@@ -174,6 +221,16 @@ export default {
 }
 .colorSecondary{
     background-color: #2a3a4b
+}
+
+
+
+@media screen and (max-width: 1366) {
+    .pdp2{
+        width: 4rem;
+        height: 4rem;
+    }
+    
 }
 
 </style>

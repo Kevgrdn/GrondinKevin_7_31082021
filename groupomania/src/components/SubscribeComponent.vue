@@ -105,4 +105,12 @@ export default {
 .m-top-perso-2{
     margin-top: 12rem;
 }
+
+
+@media screen and (max-width: 600px){
+    .m-top-perso-2{
+        margin-top: 1rem;
+    }
+}
+
 </style>

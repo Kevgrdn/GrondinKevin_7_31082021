@@ -45,7 +45,7 @@ exports.Post = Post
 //MODELE COMMENTAIRE(COMMENTARY)
 const Commentary = sequelize.define('commentary', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    content: { type: Sequelize.TEXT, allowNull: true },
+    content: { type: Sequelize.TEXT, allowNull: false },
     userId: { type: Sequelize.INTEGER, allowNull: false },
     postId: { type: Sequelize.INTEGER, allowNull: false }    
 },

@@ -24,8 +24,9 @@ export default {
     },  
     methods:{
 
+        //GET ALL USERS / AFFICHE TOUS LES UTILISATEURS
         showUsers(){
-            axios.get('auth/users')
+            axios.get('auth/users', {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             .then((res) => {
                 console.log(res)
                 this.users = res.data

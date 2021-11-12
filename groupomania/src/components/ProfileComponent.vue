@@ -6,52 +6,47 @@
             <h1>Votre profil</h1>
 
             <!--Nom-->
-            <div class="userName d-flex flex-row colorSecondary rounded-perso my-2">
-                <div class=" fw-bold col-12 p-2 mx-auto d-flex justify-content-center" >
+            <div class="d-flex flex-column  colorSecondary  flex-sm-column rounded-perso my-2">
+                <div class=" fw-bold col-12 p-2 mx-auto d-flex align-items-center justify-content-center flex-wrap" >
                     Nom :
-                    <div class="px-1 " >
+                    <div class="px-1 d-flex flex-wrap " >
                          {{this.user.username}}
                     </div>
-                    <button v-if="nameActivation == false" @click="show" class="btn-primary  col-1"><i class="fas fa-cog"></i></button>
-
+                    <button v-if="nameActivation == false" @click="nameActivate" class="btn-primary d-flex  col-2 col-md-1"><i class="fas fa-cog mx-auto"></i></button>
                 </div>
-                <div v-if="nameActivation == true">
-                    <textarea v-model.trim="name" name="" id="" cols="30" rows="10"></textarea>
-                    <button @click="updateName" >Modifier</button>
-                </div>
-                
+                <div v-if="nameActivation == true" class="d-flex flex-row my-2 mx-auto flex-wrap ">
+                    <input v-model.trim="name" name="nom" id="" cols="30" rows="10" placeholder="Votre nouveau nom" class="mx-auto my-2">
+                    <button @click="updateName" class="btn-primary mx-auto my-2 ">Modifier</button>
+                </div>  
             </div>
 
             <!--Prénom-->
-            <div class="d-flex flex-column  colorSecondary rounded-perso my-2">
-                <div class="fw-bold  mx-auto d-flex col-12 p-2 justify-content-center ">
+            <div class="d-flex flex-column  colorSecondary  flex-sm-column rounded-perso my-2">
+                <div class="fw-bold  mx-auto d-flex col-12 p-2 align-items-center justify-content-center flex-wrap ">
                     Prénom :
-                    <div class="px-1 ">
+                    <div class="px-1  ">
                         {{this.user.userFirstname}} 
                     </div>
-                    <button v-if="firstNameActivation == false" @click="show" class="btn-primary col-1"><i class="fas fa-cog"></i></button>
-
+                    <button v-if="firstNameActivation == false" @click="firstnameActivate" class="btn-primary col-2 col-md-1"><i class="fas fa-cog"></i></button>
                 </div>
-                <div v-if="firstNameActivation == true">
-                    <textarea v-model.trim="firstname" name="" id="" cols="30" rows="10"></textarea>
-                    <button @click="updateName" >Modifier</button>
+                <div v-if="firstNameActivation == true" class="d-flex flex-row my-2 mx-auto flex-wrap">
+                    <input v-model.trim="firstName" name="" id="prenom" cols="" rows="" placeholder="Votre nouveau prénom" required  class="mx-auto my-2">
+                    <button @click="updateFirstName" class="btn-primary mx-auto my-2">Modifier</button>
                 </div>
-                
             </div>
 
             <!--Email-->
-            <div class="d-flex flex-column colorSecondary rounded-perso my-2">
-                <div class="fw-bold col-10 p-2 mx-auto d-flex justify-content-center ">
+            <div class="d-flex flex-column colorSecondary flex-sm-column rounded-perso  my-2">
+                <div class="fw-bold col-10 p-2 mx-auto d-flex align-items-center flex-wrap justify-content-center ">
                     Email :
                     <div class="px-1 text-truncate">
                         {{this.user.email}}
                     </div> 
-                    <button v-if="emailActivation == false" @click="show" class="btn-primary col-1 alis"><i class="fas fa-cog"></i></button>
-
+                    <button v-if="emailActivation == false" @click="emailActivate" class="btn-primary col-2 col-md-1"><i class="fas fa-cog"></i></button>
                 </div>
-                <div v-if="emailActivation == true">
-                    <textarea v-model.trim="email" name="" id="" cols="30" rows="10"></textarea>
-                    <button @click="updateName" >Modifier</button>
+                <div v-if="emailActivation == true" class="d-flex flex-row mx-auto my-2 flex-wrap">
+                    <input v-model.trim="email" name="" id="email" cols="30" rows="10" placeholder="Votre nouveau mail"  class="mx-auto my-2">
+                    <button @click="updateEmail" class="btn-primary mx-auto my-2">Modifier</button>
                 </div>
                                
             </div>
@@ -60,58 +55,29 @@
             <div class="d-flex my-2 colorSecondary rounded-perso flex-column">
                 <div class="userImage fw-bold col-12  mx-auto">Photo de profil :
                 </div>
-                <img v-if="this.user.imageUrl !== ''||null" :src=this.user.imageUrl class="pdp  text-start my-2 mx-auto">
-                <img v-if="this.user.imageUrl == ''||null" src="https://st3.depositphotos.com/19428878/36416/v/450/depositphotos_364169666-stock-illustration-default-avatar-profile-icon-vector.jpg" class="mx-auto my-2 pdp  text-start">
-
-            </div>
-            <button  @click="editProfile" title="Modifier le profil"  id="modifyProfile" class="btn-primary col-12 col-md-6 my-2 mx-auto rounded-perso"><i class="fas fa-cog"></i> Modifier le profil</button>
-            <button @click="deleteProfile" class="btn-danger rounded-perso2 py-2 col-12 col-md-6 mx-auto"><i class="fas fa-trash"></i> Supprimer le compte</button>
-        </div>   
-
-        <!--Modification de profil-->   
-        <form v-if="this.text == true" @submit.prevent="update" class="bg-perso col-11 col-md-8 mx-auto my-2 py-2 rounded-perso">
-            <h1>Votre profil</h1>
-
-            <!--Nom-->
-            <div class="my-2 colorSecondary rounded-perso">
-                <div class="fw-bold">Nom :</div>
-                <input type="text" id="inputName" class="my-2 col-10 col-md-6" placeholder="Nom">
-            </div>
-            
-            <!--Prénom-->
-            <div class="my-2 colorSecondary rounded-perso">
-                <div class="fw-bold">Prénom :</div>
-                <input  type="text" id="inputFirstName" class="my-2 col-10 col-md-6" placeholder="Prénom">
-            </div>
-
-            <!--Email-->
-            <div class="my-2 colorSecondary rounded-perso">
-                <div class="fw-bold">Email :</div>
-                <input  type="text" id="inputEmail" class="my-2 col-10 col-md-6" placeholder="Email"> 
-            </div>
-
-            <!--Photo de profil-->
-            <div class="my-2 colorSecondary rounded-perso">
-                <div class="fw-bold">Photo :</div> 
-                <label for="inputFile" title="Choisir une image" class="btn-primary rounded-perso col-6 mx-auto my-2"> <i class="far fa-images"></i> Choisir une image ...</label>
-                <input  type="file" name="inputFile" id="inputFile" class="inputfile my-2" @change="handleFile">
+                <img @click="updatePhoto" v-if="this.user.imageUrl !== ''||null" :src=this.user.imageUrl class="pdp  text-start my-2 mx-auto">
+                <img @click="updatePhoto" v-if="this.user.imageUrl == ''||null" src="https://st3.depositphotos.com/19428878/36416/v/450/depositphotos_364169666-stock-illustration-default-avatar-profile-icon-vector.jpg" class="mx-auto my-2 pdp  text-start">
+                 <div v-if="changePictureActivation == true" class="d-flex flex-row  mx-auto my-2">
+                    <label for="pdp" class="btn-primary"><i class="fas fa-upload"></i> Photo</label>
+                    <input type="file" @change="loadPicture" name="pdp" id="photo" cols="" rows="" placeholder="" class="inputfile">
+                    <button @click="updatePhoto" class="btn-primary">Modifier</button>
+                </div>
+                <button v-if="changePictureActivation == false" @click="photoActivate" class="btn-primary col-2 col-md-1 mx-auto my-2"><i class="fas fa-cog"></i></button>
             </div>
 
             <!--Mot de passe-->
-            <div class="my-2 colorSecondary rounded-perso">
-                <div  class="userPassword fw-bold">Nouveau mot de passe : </div>
-                <input v-model.trim="user.password" type="password" id="inputPassword" class="my-2 col-10 col-md-6" placeholder="Nouveau de passe">
+            <div class="d-flex flex-column colorSecondary rounded-perso my-2">
+                
+                <div v-if="passwordActivation == true" class="d-flex col-12 flex-column flex-wrap mx-auto my-2 justify-content-between ">
+                    <input v-model.trim="oldPassword" type="password" name="oldPwd" id="oldPwd" cols="30" rows="10" placeholder="Ancien mot de passe" class="mx-auto col-6 ">
+                    <input v-model.trim="newPassword" name="newPwd" type="password" id="newPwd" cols="30" rows="10" placeholder="Nouveau mot de passe" class="mx-auto col-6 ">
+                    <button  @click="updatePassword" class="btn-primary mx-auto my-2">Modifier</button>
+                </div>
+                               
             </div>
-
-            <!--Nouveau mot de passe-->
-            <div class="my-2 colorSecondary rounded-perso">
-                <div  class="userNewPassword fw-bold" id="inputNewPassword">Confirmer le nouveau mot de passe : </div>
-                <input v-model.trim="user.newPassword" type="password" class="my-2 col-10 col-md-6" placeholder="Confirmer le nouveau mot de passe"> 
-            </div>
-            <button id="modifyProfile" title="Valider" class="btn-primary mx-2"><i class="fas fa-check"></i> Valider</button>
-        </form>
-
-
+            <button v-if="passwordActivation == false"  @click="passwordActivate" title="Modifier le mot de passe"  id="modifyProfile" class="btn-primary col-12 col-md-6 my-2 mx-auto rounded-perso"><i class="fas fa-cog"></i> Le mot de passe</button>
+            <button @click="deleteProfile" class="btn-danger rounded-perso2 py-2 col-12 col-md-6 mx-auto"><i class="fas fa-trash"></i> Supprimer le compte</button>
+        </div>   
     </div>  
 </template>
 
@@ -132,6 +98,9 @@ export default {
             emailActivation: false,
             picture:null,
             changePictureActivation: false,
+            passwordActivation:false,
+            oldPassword:'',
+            newPassword:'',
             user:{
                 username: '',
                 userFirstname:'',
@@ -144,8 +113,10 @@ export default {
         }
     },
     methods:{
+
+        //GET PROFIL / AFFICHE LE PROFIL 
         showProfile(){
-            axios.get('auth/users/'+ JSON.parse(localStorage.getItem('userInformations')).id)
+            axios.get('auth/users/'+ JSON.parse(localStorage.getItem('userInformations')).id, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             
             .then((response) => {
                 console.log(response.data)
@@ -158,66 +129,123 @@ export default {
                 console.log()
             })
         },
-        show(){
-            this.nameActivation = true
-        },
-        editProfile(){
-            this.text = true
-            
 
+        //ACTIVE LE CHAMPS NOM
+        nameActivate(){
+            this.nameActivation = true
+            
         },
+
+        //ACTIVE LE CHAMP PRENOM
+        firstnameActivate(){
+            this.firstNameActivation = true
+        },
+
+        //ACTIVE LE CHAMP MAIL
+        emailActivate(){
+            this.emailActivation = true
+        },
+
+        //ACTIVE LE CHAMP D'UPLOAD PHOTO
+        photoActivate(){
+            this.changePictureActivation = true
+        },
+
+        //ACTIVE LE CHAMP DE MOT DE PASSE
+        passwordActivate(){
+            this.passwordActivation = true
+        },
+
+        //PUT NAME / CHANGE LE NOM DE FAMILLE 
         updateName(){
-            axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id, { name: this.name})
-            .then((res) =>{
+            if (this.name !== '' && this.name.length > 2 ) {
+                axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id  + '/name', { name: this.name}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+                .then((res) =>{
                 console.log(res)
                 window.location.reload()
-            } )
-            .catch(()=> console.log())
-        },
-        /*modifyProfile(){
-            
-            if(this.user.password == this.user.newPassword){
-                axios.put('auth/users/'+ JSON.parse(localStorage.getItem('userInformations')).id, { 
+                })
+                .catch(()=> console.log())
+            }
 
-                firstname: document.getElementById('inputFirstName').value,
-                name: document.getElementById('inputName').value,
-                email: document.getElementById('inputEmail').value,
-                imageUrl: '',
-                id: this.user.id,
-            })
-            .then((data) => {
-                console.log(data)
-                this.text = false
-            })
-            .catch()
+            else
+            {
+                alert("Veuillez remplir correctement le champ avant de valider !")  
+            }
+  
+        },
+
+        //PUT FIRSTNAME / CHANGE LE PRENOM
+        updateFirstName(){
+            if (this.firstName !== '' && this.firstName.length > 2 ) {
+                
+                axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id  + '/firstname', { firstname: this.firstName}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+                .then((res) =>{
+                    console.log(res)
+                    window.location.reload()
+                } )
+                .catch(()=> console.log())
             }
             else{
-                console.log('erreur')
+                alert('Veuillez remplir correctement les champs !')
             }
+           
+        },
+
+        //PUT EMAIL / CHANGE LE MAIL
+        updateEmail(){
+            if (this.email !== '' && this.email.length >6) {
+                
+                axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id + '/email', { email: this.email}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+                .then((res) =>{
+                    console.log(res)
+                    window.location.reload()
+                } )
+                .catch(()=> console.log())
+            }
+            else{
+                alert('Veuillez remplir correctement le champ avant de valider !')
+            }
+             
+        },
+
+        //PUT PHOTO / CHANGE LA PHOTO DE PROFIL
+        updatePhoto(){
+            const newPost = new FormData()
+            console.log(this.picture)
             
-        },*/
-        update(){
-            const formData = new FormData()
-            if(this.file)
+            if(this.picture){
+            console.log(this.description)
+            newPost.append('image', this.picture)
+        
+            axios.put('/auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id +'/photo' , newPost, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+            .then ((res) => {
+                console.log(res)
+                window.location.reload()
+            })
+            .catch (err => console.log(err))
+            }   
+        },
+
+        //PUT PASSWORD // CHANGE LE MOT DE PASSE
+        updatePassword(){
+            if (this.password !== '' && this.oldPassword.length > 6) {
+                axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id + '/password', { password: this.oldPassword, password2: this.newPassword}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+                .then((res) =>{
+                    console.log(res)
+                    window.location.reload()
+                })
+                .catch(()=> console.log())
+            }
+            else
             {
-            console.log(this.file)
-            formData.append('file', this.file)
-            formData.append('email', this.user.email)
-            formData.append('name', this.user.username)
-            formData.append('firstName', this.user.userFirstname);
-
-
-            axios.put('auth/users/'+ JSON.parse(localStorage.getItem('userInformations')).id, formData)
-            .then(console.log(formData))
-            .catch(err => 
-                {
-                    console.log(err);
-                });                
+                alert('Veuillez remplir correctement les champs avant de valider !')
             }
             
         },
+
+        //DELETE PROFILE / SUPPRIME LE PROFIL
         deleteProfile(){
-            axios.delete('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id )
+            axios.delete('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}} )
             .then(res => {
                 console.log(res.data)
                 localStorage.clear()
@@ -225,11 +253,14 @@ export default {
                 })
             .catch(err => console.log(err))
         },
-        handleFileUpload( event )
+
+        //FONCTION POUR UPLOAD LA PHOTO DE PROFIL
+        loadPicture(event) 
         {
-            if (event.target.files.length === 0) {return}
-            this.file = event.target.files[0];
-        },
+        if(event.target.files.length === 0) {return}
+
+        this.picture = event.target.files[0]         
+        },   
     },
     beforeMount(){
         this.showProfile()

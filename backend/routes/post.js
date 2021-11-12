@@ -9,13 +9,13 @@ const auth = require('../middleware/auth')
 const multer = require('../middleware/multer-config')
 
 //Routes : 
-router.get('',  postCtrl.getAllPosts)
-router.post('', multer, postCtrl.createPost)
-router.post('/:id/commentary', postCtrl.createCommentary)
-router.get('/:id/commentary', postCtrl.getCommentaries)
-router.put('/:id/like', postCtrl.likeOrDislikePost)
-router.put('/:id',  multer, postCtrl.updateOnePost)
-router.delete('/:id',  postCtrl.deleteOnePost)
+router.get('', auth,   postCtrl.getAllPosts)
+router.post('', auth,  multer, postCtrl.createPost)
+router.post('/:id/commentary', auth,  postCtrl.createCommentary)
+router.get('/:id/commentary',auth,  postCtrl.getCommentaries)
+router.put('/:id/like', auth, postCtrl.likeOrDislikePost)
+router.put('/:id',auth,  multer, postCtrl.updateOnePost)
+router.delete('/:id', auth, postCtrl.deleteOnePost)
 
 
 module.exports = router;

@@ -24,7 +24,7 @@
                 <!--Boutons Like/Delete du post-->
                 <button @click="likePost" :data-id="post.id" class="btn-primary rounded my-2 col-4" title="J'aime">
                     <span :data-id="post.id">{{post.liked}}</span>  <i :data-id="post.id" class="far fa-thumbs-up"></i></button>
-                <button v-if="post.author.id == this.userId " @click="deletePost" :data-id="post.id" class="btn-danger  py-2 rounded col-4" title="Supprimer"><i :data-id="post.id" class="far fa-trash-alt"></i></button>
+                <button v-if="post.author.id == this.userId || this.isModerator == 1 " @click="deletePost" :data-id="post.id" class="btn-danger  py-2 rounded col-4" title="Supprimer"><i :data-id="post.id" class="far fa-trash-alt"></i></button>
             </div>
 
                 <!--Partie création de commentaires-->
@@ -33,12 +33,13 @@
                     <button  :data-id="post.id" @click="sendCommentaries" class="btn-primary  mx-1 col-2  col-md-1 " title="Envoyer le commentaire"><i :data-id="post.id" class="far fa-comments"></i></button>
                 </div>
             
-            <!--Boucle sur les commentaires du post avec l'ID de celui-ci-->    
-            <div v-for="comment in commentaries.comments" v-bind:key="comment.id" class="row mx-1 justify-content-around">
+            <!--Boucle sur les commentaires du post avec l'ID de celui-ci--> 
+            <div :id="'comment-' + post.id" class="hide  flex-column col-12">
+                <div v-for="comment in commentaries.comments" v-bind:key="comment.id"  class="row mx-1 justify-content-around">
 
                 
                 <!--Partie commentaires-->
-                <div v-if="comment.postId == post.id && this.isActive == true" class="my-2 colorSecondary rounded-perso col-12 my-3 py-2">
+                <div v-if="comment.postId == post.id "  class="my-2 colorSecondary rounded-perso col-12 my-3 py-2">
                     
                     <!--Photo de profil de l'auteur du commentaire-->
                     <div v-if="comment.postId == post.id" class="w-auto px-0 d-flex align-items-center">
@@ -55,11 +56,13 @@
                     </div>
 
                     <!--Contenu du commentaire-->
-                    <div v-if="comment.postId == post.id" class="bg-secondary my-3 text-start p-2 rounded-perso ">
+                    <div v-if="comment.postId == post.id" class="bg-secondary my-3 text-start text-light fw-bold p-2 rounded-perso ">
                         {{comment.content}}
                     </div>
                 </div>    
-            </div>
+                </div>
+            </div>   
+            
 
             <!--Bouton "Afficher les commentaires"-->
             <div v-bind:id="post.id">
@@ -85,9 +88,9 @@ export default {
             description:'',
             liked: 0,
             pdp:'',
-            isActive: false,
             currentPost:'',
             userId: JSON.parse(localStorage.getItem('userInformations')).id,
+            isModerator: JSON.parse(localStorage.getItem('userInformations')).is_moderator ,
             commentaries:{
                 comments:[],
 
@@ -97,44 +100,47 @@ export default {
     },
 
     methods:{
+        // GET POST / AFFICHER LES POST SUR LA PAGE
         afficherPosts(){
-            axios.get('/post')
+            axios.get('/post', {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             .then((response) => {
                 this.posts = localStorage.setItem('postInfo', JSON.stringify(response.data))  
                 this.posts = response.data
                 console.log(this.posts)
+                console.log(this.isModerator)
+
             })
-            .catch(err => console.log(err))    
-            
-                             
+            .catch(err => console.log(err))                       
         },
-        afficherPdp(){
-            console.log(this.posts.author.imageUrl)
-        },
+
+        //POST COMMENTAIRES / ENVOYER DES COMMENTAIRES 
         sendCommentaries(){
             var id = event.target.getAttribute('data-id');
 
             //console.log(event.target)
             
-            axios.post('/post/'+ id +'/commentary', {content: this.comments[id], userId: this.userId, postId: id})
+            axios.post('/post/'+ id +'/commentary', {content: this.comments[id], userId: this.userId, postId: id}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             .then(res => {
             console.log(res)})
             .catch(err => {console.log(err)
             })
             
         },
+
+        //GET COMMENTAIRES / AFFICHER LES COMMENTAIRES
         showCommentaries(){
             var id = event.target.getAttribute('data-id');
             console.log(id)
-            axios.get('/post/' + id +'/commentary')
+            axios.get('/post/' + id +'/commentary', {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             .then(res => {
                 this.commentaries.comments = res.data
                 console.log(res.data)
-                this.toggle()
-
+                this.toggle(id)
                 })
             .catch(err => console.log(err))
         },
+
+        //PUT LIKE / LIKER LES POSTS
         likePost(){
             var id = event.target.getAttribute('data-id');
             
@@ -149,7 +155,7 @@ export default {
 
             }
             console.log(this.liked)
-            axios.put('/post/' + id +'/like', { like : this.liked})
+            axios.put('/post/' + id +'/like', { like : this.liked}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
                 .then(res => {
                 console.log(res.data)
                 })
@@ -157,35 +163,34 @@ export default {
 
 
         },
-        updatePost(){
-            var id = event.target.getAttribute('data-id');
 
-            axios.put('/post' + id, { description: this.description} )
-            .then(res => {
-                console.log(res.data)
-                })
-            .catch(err => console.log(err))
-
-        },
+        //DELETE POST / SUPPRESSION DE POST
         deletePost(){
             var id = event.target.getAttribute('data-id')
-            axios.delete('/post/' + id)
+            axios.delete('/post/' + id, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             .then(res => {
                 console.log(res.data)
+                window.location.reload()
                 })
             .catch(err => console.log(err))
 
 
         },
-        toggle() {
-            if (!this.isActive) {
-                this.isActive = true;
-                console.log(this.isActive)
-            } else {
-                this.isActive = false;
-                console.log(this.isActive)
-            }
+
+        //TOGGLE COMMENTAIRE
+        toggle(id) {
+           let visibility = document.getElementById('comment-'+ id).style.display
+           console.log(visibility)
+           if (visibility == 'none') {
+               document.getElementById('comment-'+ id).style.display = 'flex'
+
+           }
+           else{
+                document.getElementById('comment-'+ id).style.display = 'none'
+           }
         },
+
+        //VIDE LE LOCAL STORAGE LORS DU CLIC SUR DECONNEXION
         disconnect(){
             localStorage.clear()
         }              
@@ -200,6 +205,10 @@ export default {
 
 <style lang="scss">
 
+
+.hide{
+    display: none;
+}
 .rounded-perso{
     border-radius: 1rem 1rem;
 }

@@ -14,8 +14,6 @@ const sequelize = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER
   }
 
 
-
-
 //MODELE UTILISATEUR (USER)
 const User = sequelize.define('user', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },

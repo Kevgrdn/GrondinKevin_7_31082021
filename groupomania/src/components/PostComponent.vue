@@ -1,5 +1,7 @@
 <template>
   <div class="row ">
+    
+    <!--Formulaire de création de post-->
     <form @submit.prevent="post" enctype="multipart/form-data" class="bg-perso d-flex rounded-perso flex-column col-11 col-md-8 my-2 mx-auto p-3 shadow">
       <textarea v-model.trim="postInformations.description" id="text" name="text" placeholder="Exprimez-vous ici" class="rounded my-2 col-12 mx-auto  " required></textarea>
       <img  v-if="picture" :src="pictureUrl"  width="170px" class="d-block w-25" alt="Image">
@@ -7,6 +9,7 @@
       <input type="file" @change="loadPicture" name="file" id="file" class="mx-auto my-1 py-1 btn-primary inputfile " >        
       <button class="btn-primary rounded mx-auto my-2 py-1 col-8 col-md-6" title="Poster"><i class="far fa-paper-plane"></i> Post</button>
     </form>
+
   </div> 
 </template>
 
@@ -20,6 +23,7 @@ export default {
   },
   data(){
     return{
+      noPicture:[],
       postInformations: {
         description:'',
         imageUrl:'',
@@ -29,23 +33,45 @@ export default {
     }
   },
   methods:{
+
+    //POST LE POST 
     post()
     {
       const newPost = new FormData()
       if(this.picture) 
       {
-        console.log(this.description);
+        console.log(this.description)
         newPost.append('image', this.picture)
         newPost.append('description', this.postInformations.description)
         newPost.append('userId', this.postInformations.userId)
         
         console.log(this.picture)
-        //const requestOptions = { description: this.postInformations.description, imageUrl: this.picture}
-        axios.post('/post', newPost)
-        .then (console.log(newPost))
+        console.log(newPost)
+        axios.post('/post', newPost,  {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+        .then ((res) => {
+          console.log(res)
+          window.location.reload()
+
+        })
+        .catch (err => console.log(err))
+      }
+      else{
+        newPost.append('description', this.postInformations.description)
+        newPost.append('userId', this.postInformations.userId)
+        
+        console.log(this.picture)
+        console.log(newPost)
+        axios.post('/post', newPost,  {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
+        .then ((res) => {
+          console.log(res)
+          window.location.reload()
+
+        })
         .catch (err => console.log(err))
       }
     },
+
+    //OBTIENS L'OBJET FILE
     loadPicture(event) 
     {
       if(event.target.files.length === 0) {return}

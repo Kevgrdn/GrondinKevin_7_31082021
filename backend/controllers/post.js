@@ -32,11 +32,22 @@ exports.getAllPosts = (req, res, next) => {
 //Enregistre un nouveau post
 exports.createPost = (req, res, next) => {
   console.log(req)
+  
+  let urlMedia
+  if(req.file){
+    urlMedia = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+  }
+ 
+  else
+  {
+    urlMedia=""
+  }
+
   //Ajoute le nouveau post grâce au modèle, et au tableau "post" de la requête 
   model.Post.create({
     description: req.body.description,
     userId : req.body.userId,
-    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    imageUrl: urlMedia,
     liked: 0
   })
   .then(() => res.status(201).json({ message: 'Post créé !' }))

@@ -10,25 +10,25 @@
                 <div>
                     <label for="name">Nom</label>
                     <br>
-                    <input v-model="user.name" id="name" type="text" class="form">
+                    <input v-model="name" id="name" type="text" class="form" required>
                     <p id="nameMessage">{{message.name}}</p>
                 </div>   
                 <div>
                     <label for="firstName">Prénom</label>
                     <br>
-                    <input v-model="user.firstName" id="firstName" type="text" class="form">
+                    <input v-model="firstName" id="firstName" type="text" class="form" required >
                     <p id="nameMessage">{{message.firstName}}</p>
                 </div>          
                 <div>
                     <label for="email">E-mail</label>
                     <br>
-                    <input v-model="user.email" id="email" type="email" class="form">
+                    <input v-model="email" id="email" type="email" class="form" required>
                     <p id="emailMessage">{{message.email}}</p>
                 </div>    
                 <div>
                     <label for="password">Mot de passe</label>
                     <br>
-                    <input v-model="user.password" id="password" type="password" class="form">
+                    <input v-model="password" id="password" type="password" class="form" required>
                     <p id="passwordMessage">{{message.password}}</p>
                 </div>
                 <div class="">
@@ -46,17 +46,20 @@
 <script>
 
 import axios from 'axios'
+import { required, alpha, alphaNum, email, maxLength, minLength } from "vuelidate/lib/validators";
+
+
 export default {
     name: 'Subscribe',
     data(){
         return{
-            user:{
-                firstName:'',
-                name:'',
-                email:'',
-                password:'',
-                passwordConfirmation:'',
-            },
+        
+            firstName:'',
+            name:'',
+            email:'',
+            password:'',
+            passwordConfirmation:'',
+            
             message:{
                 firstName:'',
                 name:'',
@@ -74,27 +77,45 @@ export default {
             }
         }
     },
+    validations: {
+        firstName: { required, alpha, maxLength: maxLength(20) },
+        name: { required, alpha, maxLength: maxLength(20)},
+        password:{ required, alphaNum, maxLength: maxLength(20), minLength: minLength(8), strongPassword(mdp) {
+            return (
+                /[a-zA-Z]/.test(mdp) && // checks for a-z
+                /^\S+$/.test(mdp) &&
+                /[0-9]/.test(mdp) && // checks for 0-9
+                mdp.length >= 8
+            )},
+        },
+        email: { required, email, maxLength: maxLength(40)}
+    },
 
     methods:{
         subscribe(){
-            
-            let data = { name: this.user.name, firstname: this.user.firstName, email: this.user.email, password: this.user.password}
-            console.log(data)
-
-            axios.post('auth/signup', data)
-            .then((response) => { 
-                console.log(response)
-                if (response.status == 200){
-
-                    this.$router.push("/")
-                } 
-                else{
-                    this.$router.push("subscribe")
-                } 
-            })
-            .catch(() => {
+            if(this.firstName.length > 1 && this.name.length > 1 && this.password.length > 1 && this.email.length > 6){
+                let data = { name: this.name, firstname: this.firstName, email: this.email, password: this.password}
                 console.log(data)
-            })
+
+                axios.post('auth/signup', data)
+                .then((response) => { 
+                    console.log(response)
+                    if (response.status == 200){
+
+                        this.$router.push("/")
+                    } 
+                    else{
+                        this.$router.push("subscribe")
+                    } 
+                })
+                .catch(() => {
+                    console.log(data)
+                })
+            } 
+            else {
+                alert("Veuillez remplir correctement le formulaire avant de valider l'inscription")
+            }
+            
         }
     }
 }

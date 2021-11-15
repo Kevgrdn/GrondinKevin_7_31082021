@@ -3,13 +3,15 @@ Projet n°7 du parcours développeur web d'OpenClassrooms
 
 Créez un réseau social d’entreprise
 
+Ceci est le dernier projet d'OpenClassrooms dans lequel j'ai dû me confronter à la réalisation complète d'une application web, comprenant à la fois `backend` et `frontend`. 
+
+
 Le projet consiste à construire un réseau social interne pour les employés de Groupomania. Le but de cet outil est de faciliter les interactions entre collègues. 
 On peut y partager des éléments texte, des photos, mais également poster des "Likes". Chaque utilisateur doit s'inscrire pour pouvoir avoir accès au site, puis se connecter via l'interface de connexion.
 Tous les membres peuvent supprimer leur profil et leurs postes. Les administrateurs peuvent également supprimer les posts des utilisateurs.
 
 ---
 
-Ceci est le dernier projet d'OpenClassrooms dans lequel j'ai dû me confronter à la réalisation complète d'une application web, comprenant à la fois `backend` et `frontend`. 
 
 BACKEND :
 

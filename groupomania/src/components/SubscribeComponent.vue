@@ -11,18 +11,24 @@
                     <label for="name">Nom</label>
                     <br>
                     <input v-model="name" id="name" type="text" class="form" required>
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!name.minLength && this.error.firstname">Veuillez remplir le champ convenablement.</div>                                        
+
                     <p id="nameMessage">{{message.name}}</p>
                 </div>   
                 <div>
                     <label for="firstName">Prénom</label>
                     <br>
                     <input v-model="firstName" id="firstName" type="text" class="form" required >
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!firstName.minLength && this.error.firstname">Veuillez remplir le champ convenablement.</div>                                        
+
                     <p id="nameMessage">{{message.firstName}}</p>
                 </div>          
                 <div>
                     <label for="email">E-mail</label>
                     <br>
                     <input v-model="email" id="email" type="email" class="form" required>
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!email.minLength && this.error.email">Veuillez remplir le champ convenablement.</div>                                        
+
                     <p id="emailMessage">{{message.email}}</p>
                 </div>    
                 <div>
@@ -79,9 +85,9 @@ export default {
         }
     },
     validations: {
-        firstName: { required, alpha, maxLength: maxLength(20) },
-        name: { required, alpha, maxLength: maxLength(20)},
-        password:{ required, alphaNum, maxLength: maxLength(20), minLength: minLength(8), strongPassword(mdp) {
+        firstName: { required, alpha, minLength:minLength(2), maxLength: maxLength(20) },
+        name: { required, alpha, minLength: minLength(2), maxLength: maxLength(20)},
+        password:{ required, alphaNum, maxLength: maxLength(20), strongPassword(mdp) {
             return (
                 /[a-zA-Z]/.test(mdp) && // checks for a-z
                 /^\S+$/.test(mdp) &&
@@ -89,12 +95,12 @@ export default {
                 mdp.length >= 8
             )},
         },
-        email: { required, email, minLength: maxLength(5), maxLength: maxLength(40)}
+        email: { required, email, minLength: minLength(5), maxLength: maxLength(40)}
     },
 
     methods:{
         subscribe(){
-            if(this.firstName.length > 1 && this.name.length > 1 && this.password.length > 1 && this.email.length > 6){
+            if(this.firstName.length > 1 && this.name.length > 1 && this.password.length >= 8 && this.email.length > 4 ){
                 let data = { name: this.name, firstname: this.firstName, email: this.email, password: this.password}
                 console.log(data)
 
@@ -115,10 +121,23 @@ export default {
                 })
             } 
            else {
-                alert("Veuillez remplir correctement le formulaire avant de valider l'inscription")
+               if (this.firstName.length <= 1) {
+                    this.error.firstname = true
+               }
+               if (this.email.length <4) {
+                    this.error.email = true 
+               }
+               if (this.name.minLength && this.name.alpha && this.name.maxLength) {
+                    this.error.name = true 
+               }
+               if (!this.password.strongPassword) {
+                    this.error.password = true 
+               }
+             
             }
             
-        }
+        },
+          
     }
 }
 </script>

@@ -30,7 +30,7 @@ Le site a été réalisé avec `VueJS, Javascript, HTML et Bootstrap`.
 INSTALLATION :
 
 - Installer un logiciel de traitement SQL (ex: `MySQL`)
-- Dans le dossier backend : `npm install`
+- Dans le dossier backend : `npm install -g nodemon` `npm install`
 - Créer le fichier `.env` dans le dossier `backend`
 - Dans ce fichier, copier les variables d'environnement provenant du fichier `.env.dist` en utilisant vos variables. 
 - Dans le dossier backend, via le terminal : `nodemon server`

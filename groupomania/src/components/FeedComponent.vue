@@ -121,7 +121,9 @@ export default {
             
             axios.post('/post/'+ id +'/commentary', {content: this.comments[id], userId: this.userId, postId: id}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
             .then(res => {
-            console.log(res)})
+            console.log(res)
+            window.location.reload()
+})
             .catch(err => {console.log(err)
                 alert("Veuillez écrire dans le champ avant d'envoyer votre commentaire")
             })

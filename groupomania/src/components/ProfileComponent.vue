@@ -61,10 +61,9 @@
                 </div>
                 <img @click="updatePhoto" v-if="this.user.imageUrl !== ''||null" :src=this.user.imageUrl class="pdp  text-start my-2 mx-auto">
                 <img @click="updatePhoto" v-if="this.user.imageUrl == ''||null" src="https://st3.depositphotos.com/19428878/36416/v/450/depositphotos_364169666-stock-illustration-default-avatar-profile-icon-vector.jpg" class="mx-auto my-2 pdp  text-start">
-                 <div v-if="changePictureActivation == true" class="d-flex flex-row  mx-auto my-2">
-                    <label for="pdp" class="btn-primary"><i class="fas fa-upload"></i> Photo</label>
-                    <input type="file" @change="loadPicture" name="pdp" id="photo" cols="" rows="" placeholder="" class="inputfile">
-                    <button @click="updatePhoto" class="btn-primary">Modifier</button>
+                <div v-if="changePictureActivation == true" class="d-flex flex-column  mx-auto my-2 col-12">
+                    <input type="file" @change="loadPicture" name="pdp" id="photo" cols="" rows="" placeholder="" class="btn-primary col-11 col-md-6 mx-auto my-2">
+                    <button @click="updatePhoto" class="btn-primary col-6 col-md-4 mx-auto">Modifier</button>
                 </div>
                 <button v-if="changePictureActivation == false" @click="photoActivate" class="btn-primary col-2 col-md-1 mx-auto my-2"><i class="fas fa-cog"></i></button>
             </div>

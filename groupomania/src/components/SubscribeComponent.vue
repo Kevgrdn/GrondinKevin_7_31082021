@@ -6,11 +6,12 @@
                 Bienvenue sur le portail d'inscription   
             </div>
             <img class=" w-25 m-auto" src="../assets/icon-left-font-monochrome-white.png" alt="Logo">
-            <form>
+            <form @submit.prevent="subscribe">
+ 
                 <div>
                     <label for="name">Nom</label>
                     <br>
-                    <input v-model="name" id="name" type="text" class="form" required>
+                    <input v-model.trim="name" id="name" type="text" class="form" required>
                     <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!name.minLength && this.error.firstname">Veuillez remplir le champ convenablement.</div>                                        
 
                     <p id="nameMessage">{{message.name}}</p>
@@ -40,12 +41,13 @@
                     <p id="passwordMessage">{{message.password}}</p>
                 </div>
                 <div class="">
-                    <button v-on:click="subscribe" class="btn-primary">S'inscrire</button>
+                    <button  class="btn-primary">S'inscrire</button>
                     <div class="d-flex m-auto flex-column my-3">Vous avez déjà un compte ?
-                        <router-link to="/" class="">Connectez-vous</router-link>
                     </div>
                 </div>
             </form>
+            <router-link to="/" class="">Connectez-vous</router-link>
+
             </div> 
         </div>
     </div>  
@@ -100,7 +102,7 @@ export default {
 
     methods:{
         subscribe(){
-            if(this.firstName.length > 1 && this.name.length > 1 && this.password.length >= 8 && this.email.length > 4 ){
+            if(this.firstName.length > 1  && this.name.length > 1 && this.password.length >= 8 && this.email.length > 4 ){
                 let data = { name: this.name, firstname: this.firstName, email: this.email, password: this.password}
                 console.log(data)
 
@@ -137,7 +139,6 @@ export default {
             }
             
         },
-          
     }
 }
 </script>

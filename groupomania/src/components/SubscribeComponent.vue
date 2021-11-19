@@ -29,6 +29,8 @@
                     <label for="password">Mot de passe</label>
                     <br>
                     <input v-model="password" id="password" type="password" class="form" required>
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!password.minLength && this.error.password">Veuillez remplir le champ convenablement.</div>                                        
+
                     <p id="passwordMessage">{{message.password}}</p>
                 </div>
                 <div class="">
@@ -72,7 +74,6 @@ export default {
                 name: false,
                 email: false,
                 password: false,
-                passwordConfirm: false,
                 login: false
             }
         }
@@ -88,7 +89,7 @@ export default {
                 mdp.length >= 8
             )},
         },
-        email: { required, email, maxLength: maxLength(40)}
+        email: { required, email, minLength: maxLength(5), maxLength: maxLength(40)}
     },
 
     methods:{
@@ -110,9 +111,10 @@ export default {
                 })
                 .catch(() => {
                     console.log(data)
+                    
                 })
             } 
-            else {
+           else {
                 alert("Veuillez remplir correctement le formulaire avant de valider l'inscription")
             }
             

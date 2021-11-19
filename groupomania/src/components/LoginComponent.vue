@@ -69,10 +69,13 @@ export default {
                 else
                 {
                     this.$router.push('login')
+
                 }
             })
             .catch(() => {
                 console.log(data)
+                alert('Veuillez vérifier les champs avant de continuer')
+
             })   
         }
     }

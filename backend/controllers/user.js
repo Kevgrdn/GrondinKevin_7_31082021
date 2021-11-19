@@ -117,6 +117,7 @@ exports.updateUser = (req, res, next) => {
     } 
 }
 
+//Mise a jour photo
 exports.updatePhoto = (req,res,next) => {
     model.User.update({
         imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`

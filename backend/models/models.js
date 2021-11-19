@@ -1,4 +1,6 @@
 const { Sequelize } = require('sequelize');
+const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv').config();
 
 
 //Connexion à la base de donnée MySQL
@@ -26,6 +28,28 @@ const User = sequelize.define('user', {
 },
 {
     timestamps: true, createdAt: 'created', updatedAt: false, underscored: true
+})
+User.sync().then(() => 
+{
+    bcrypt.hash(process.env.DB_PASSWORD, 10)
+    .then(hash => {
+      User.findOrCreate({
+        where: {
+          email:"admin@groupomania.com"
+        },
+        defaults:{
+          id: 1,
+          name: "admin",
+          firstname: "admin",
+          email: process.env.DB_MAIL,
+          password: hash,
+          imageUrl: "",
+          is_moderator: 1
+        }    
+      })
+    })
+    .catch(console.log('Erreur'))
+    
 })
 exports.User = User
 
@@ -61,5 +85,6 @@ Post.belongsTo(User, {foreignKey: 'userId', as:'author'})
 User.hasMany(Commentary, {foreignKey: 'userId'})
 
 Commentary.belongsTo(User, {foreignKey: 'userId', as:'author'})
+
 
 sequelize.sync()

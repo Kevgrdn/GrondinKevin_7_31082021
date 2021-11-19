@@ -123,6 +123,7 @@ export default {
             .then(res => {
             console.log(res)})
             .catch(err => {console.log(err)
+                alert("Veuillez écrire dans le champ avant d'envoyer votre commentaire")
             })
             
         },

@@ -14,8 +14,10 @@
                     </div>
                     <button v-if="nameActivation == false" @click="nameActivate" class="btn-primary d-flex  col-2 col-md-1"><i class="fas fa-cog mx-auto"></i></button>
                 </div>
-                <div v-if="nameActivation == true" class="d-flex flex-row my-2 mx-auto flex-wrap ">
-                    <input v-model.trim="name" name="nom" id="" cols="30" rows="10" placeholder="Votre nouveau nom" class="mx-auto my-2">
+                <div v-if="nameActivation == true" class="d-flex flex-column my-2 mx-auto flex-wrap col-12">
+                    <input v-model.trim="name" name="nom" id="" cols="30" rows="10" placeholder="Votre nouveau nom" class="mx-auto my-2 col-12 col-md-8">
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!name.minLength && this.clicName">Veuillez remplir le champ convenablement.</div>
+
                     <button @click="updateName" class="btn-primary mx-auto my-2 ">Modifier</button>
                 </div>  
             </div>
@@ -29,8 +31,9 @@
                     </div>
                     <button v-if="firstNameActivation == false" @click="firstnameActivate" class="btn-primary col-2 col-md-1"><i class="fas fa-cog"></i></button>
                 </div>
-                <div v-if="firstNameActivation == true" class="d-flex flex-row my-2 mx-auto flex-wrap">
-                    <input v-model.trim="firstName" name="" id="prenom" cols="" rows="" placeholder="Votre nouveau prénom" required  class="mx-auto my-2">
+                <div v-if="firstNameActivation == true" class="d-flex flex-column my-2 mx-auto flex-wrap col-12">
+                    <input v-model.trim="firstName" name="" id="prenom" cols="" rows="" placeholder="Votre nouveau prénom" required  class="mx-auto my-2 col-12 col-md-8">
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!firstName.minLength && this.clicFirstName">Veuillez remplir le champ convenablement.</div>                    
                     <button @click="updateFirstName" class="btn-primary mx-auto my-2">Modifier</button>
                 </div>
             </div>
@@ -44,8 +47,9 @@
                     </div> 
                     <button v-if="emailActivation == false" @click="emailActivate" class="btn-primary col-2 col-md-1"><i class="fas fa-cog"></i></button>
                 </div>
-                <div v-if="emailActivation == true" class="d-flex flex-row mx-auto my-2 flex-wrap">
-                    <input v-model.trim="email" name="" id="email" cols="30" rows="10" placeholder="Votre nouveau mail"  class="mx-auto my-2">
+                <div v-if="emailActivation == true" class="d-flex flex-column mx-auto my-2 flex-wrap col-12">
+                    <input v-model.trim="email" name="" id="email" cols="30" rows="10" placeholder="Votre nouveau mail"  class="mx-auto my-2 col-12 col-md-8">
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!email.minLength && this.clicEmail">Veuillez remplir le champ convenablement.</div>                                                            
                     <button @click="updateEmail" class="btn-primary mx-auto my-2">Modifier</button>
                 </div>
                                
@@ -71,17 +75,19 @@
                 <div v-if="passwordActivation == true" class="d-flex col-12 flex-column flex-wrap mx-auto my-2 justify-content-between ">
                     <input v-model.trim="oldPassword" type="password" name="oldPwd" id="oldPwd" cols="30" rows="10" placeholder="Ancien mot de passe" class="mx-auto col-6 ">
                     <input v-model.trim="newPassword" name="newPwd" type="password" id="newPwd" cols="30" rows="10" placeholder="Nouveau mot de passe" class="mx-auto col-6 ">
+                    <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!oldPassword.minLength && this.clicPassword">Veuillez remplir le champ convenablement.</div>                                        
                     <button  @click="updatePassword" class="btn-primary mx-auto my-2">Modifier</button>
                 </div>
                                
             </div>
-            <button v-if="passwordActivation == false"  @click="passwordActivate" title="Modifier le mot de passe"  id="modifyProfile" class="btn-primary col-12 col-md-6 my-2 mx-auto rounded-perso"><i class="fas fa-cog"></i> Le mot de passe</button>
+            <button v-if="passwordActivation == false"  @click="passwordActivate" title="Modifier le mot de passe"  id="modifyProfile" class="btn-primary col-12 col-md-6 my-2 mx-auto rounded-perso"><i class="fas fa-cog"></i> Modifier le  mot de passe</button>
             <button @click="deleteProfile" class="btn-danger rounded-perso2 py-2 col-12 col-md-6 mx-auto"><i class="fas fa-trash"></i> Supprimer le compte</button>
         </div>   
     </div>  
 </template>
 
 <script>
+import { required, alpha, alphaNum, email, maxLength, minLength } from "vuelidate/lib/validators";
 
 import axios from  'axios'
 export default {
@@ -101,6 +107,10 @@ export default {
             passwordActivation:false,
             oldPassword:'',
             newPassword:'',
+            clicName:false,
+            clicFirstName:false,
+            clicEmail:false,
+            clicPassword:false,
             user:{
                 username: '',
                 userFirstname:'',
@@ -111,6 +121,27 @@ export default {
                 id: JSON.parse(localStorage.getItem('userInformations')).id  
             },
         }
+    },
+    validations: {
+        firstName: { required, alpha, maxLength: maxLength(20) },
+        name: { required, alpha, minLength: minLength(2), maxLength: maxLength(20)},
+        oldPassword:{ required, alphaNum, maxLength: maxLength(20), strongPassword(oldmdp) {
+            return (
+                /[a-zA-Z]/.test(oldmdp) && // checks for a-z
+                /^\S+$/.test(oldmdp) &&
+                /[0-9]/.test(oldmdp) && // checks for 0-9
+                oldmdp.length >= 8
+            )},
+        },
+        newPassword:{ required, alphaNum, maxLength: maxLength(20), strongPassword(newmdp) {
+            return (
+                /[a-zA-Z]/.test(newmdp) && // checks for a-z
+                /^\S+$/.test(newmdp) &&
+                /[0-9]/.test(newmdp) && // checks for 0-9
+                newmdp.length >= 8
+            )},
+        },
+        email: { required, email, maxLength: maxLength(40)}
     },
     methods:{
 
@@ -158,37 +189,35 @@ export default {
 
         //PUT NAME / CHANGE LE NOM DE FAMILLE 
         updateName(){
-            if (this.name !== '' && this.name.length > 2 ) {
+            if (this.name.length > 2 && this.name !== '') {
                 axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id  + '/name', { name: this.name}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
                 .then((res) =>{
                 console.log(res)
                 window.location.reload()
-                })
-                .catch(()=> console.log())
+            
+            })
+            .catch(()=> console.log())
             }
+            else{
+                this.clicName = true
 
-            else
-            {
-                alert("Veuillez remplir correctement le champ avant de valider !")  
             }
-  
         },
 
         //PUT FIRSTNAME / CHANGE LE PRENOM
         updateFirstName(){
-            if (this.firstName !== '' && this.firstName.length > 2 ) {
-                
+            if (this.firstName !== '' && this.firstName.length > 2) {
                 axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id  + '/firstname', { firstname: this.firstName}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
                 .then((res) =>{
                     console.log(res)
                     window.location.reload()
                 } )
-                .catch(()=> console.log())
+                .catch(()=> console.log()) 
             }
             else{
-                alert('Veuillez remplir correctement les champs !')
+                this.clicFirstName = true
+
             }
-           
         },
 
         //PUT EMAIL / CHANGE LE MAIL
@@ -203,7 +232,7 @@ export default {
                 .catch(()=> console.log())
             }
             else{
-                alert('Veuillez remplir correctement le champ avant de valider !')
+                this.clicEmail = true
             }
              
         },
@@ -238,7 +267,7 @@ export default {
             }
             else
             {
-                alert('Veuillez remplir correctement les champs avant de valider !')
+                this.clicPassword = true
             }
             
         },
@@ -264,7 +293,7 @@ export default {
     },
     beforeMount(){
         this.showProfile()
-    }
+    },
 }
 
 </script>

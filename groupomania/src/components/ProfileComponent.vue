@@ -221,7 +221,9 @@ export default {
 
         //PUT EMAIL / CHANGE LE MAIL
         updateEmail(){
-            if (this.email !== '' && this.email.length >6) {
+            var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+            if (this.email !== '' && this.email.length >6 && regex.test(this.email)) {
                 
                 axios.put('auth/users/' + JSON.parse(localStorage.getItem('userInformations')).id + '/email', { email: this.email}, {headers:{'Authorization': 'Bearer '  + localStorage.getItem('token')}})
                 .then((res) =>{

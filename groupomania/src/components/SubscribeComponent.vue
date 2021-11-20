@@ -11,7 +11,7 @@
                 <div>
                     <label for="name">Nom</label>
                     <br>
-                    <input v-model.trim="name" id="name" type="text" class="form" required>
+                    <input v-model="name" id="name" type="text" class="form">
                     <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!name.minLength && this.error.firstname">Veuillez remplir le champ convenablement.</div>                                        
 
                     <p id="nameMessage">{{message.name}}</p>
@@ -19,7 +19,7 @@
                 <div>
                     <label for="firstName">Prénom</label>
                     <br>
-                    <input v-model="firstName" id="firstName" type="text" class="form" required >
+                    <input v-model="firstName" id="firstName" type="text" class="form" >
                     <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!firstName.minLength && this.error.firstname">Veuillez remplir le champ convenablement.</div>                                        
 
                     <p id="nameMessage">{{message.firstName}}</p>
@@ -27,7 +27,7 @@
                 <div>
                     <label for="email">E-mail</label>
                     <br>
-                    <input v-model="email" id="email" type="email" class="form" required>
+                    <input v-model="email" id="email" type="email" class="form">
                     <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!email.minLength && this.error.email">Veuillez remplir le champ convenablement.</div>                                        
 
                     <p id="emailMessage">{{message.email}}</p>
@@ -35,7 +35,7 @@
                 <div>
                     <label for="password">Mot de passe</label>
                     <br>
-                    <input v-model="password" id="password" type="password" class="form" required>
+                    <input v-model="password" id="password" type="password" class="form">
                     <div class="error btn-danger col-12 col-md-8 mx-auto" v-if="!password.minLength && this.error.password">Veuillez remplir le champ convenablement.</div>                                        
 
                     <p id="passwordMessage">{{message.password}}</p>
@@ -56,14 +56,18 @@
 <script>
 
 import axios from 'axios'
-import { required, alpha, alphaNum, email, maxLength, minLength } from "vuelidate/lib/validators";
 
+import useVuelidate from'@vuelidate/core'
+import { required, alpha, alphaNum, email, maxLength, minLength } from "@vuelidate/validators";
 
 export default {
-    name: 'Subscribe',
+    setup () {
+        return { 
+            v$: useVuelidate() 
+        }
+    },
     data(){
         return{
-        
             firstName:'',
             name:'',
             email:'',
@@ -102,7 +106,9 @@ export default {
 
     methods:{
         subscribe(){
-            if(this.firstName.length > 1  && this.name.length > 1 && this.password.length >= 8 && this.email.length > 4 ){
+            var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+            if(this.firstName.length > 1  && this.name.length > 1 && this.password.length >= 8 && this.password.length < 20 && this.email.length > 4 && regex.test(this.email)){
                 let data = { name: this.name, firstname: this.firstName, email: this.email, password: this.password}
                 console.log(data)
 
